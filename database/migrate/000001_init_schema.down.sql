@@ -1,0 +1,8 @@
+DROP TABLE IF EXISTS schema_migration;
+DROP TABLE IF EXISTS tbl_employe_account CASCADE;
+DROP TABLE IF EXISTS tbl_country CASCADE;
+DROP TABLE IF EXISTS tbl_district CASCADE;
+DROP TABLE IF EXISTS tbl_employe_address CASCADE;
+DROP TABLE IF EXISTS tbl_employe_data CASCADE;
+DROP TABLE IF EXISTS tbl_employe_social_media CASCADE;
+DROP TABLE IF EXISTS tbl_province CASCADE;
