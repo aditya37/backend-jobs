@@ -10,10 +10,13 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"log"
+	"os"
 
 	model "github.com/aditya37/backend-jobs/api/model"
 	"github.com/aditya37/backend-jobs/api/network"
 	"github.com/aditya37/backend-jobs/api/repository"
+	"github.com/joho/godotenv"
 )
 
 var (
@@ -21,9 +24,13 @@ var (
 )
 
 func main() {
-	dbConn,err := connection.DatabaseConn("localhost","5432","admin","lymousin","db_jobs")
+	env := godotenv.Load()
+	if env != nil {
+		log.Panic("Error .env file not found")
+	}
+	dbConn,err := connection.DatabaseConn(os.Getenv("DBHOST"),os.Getenv("DBPORT"),os.Getenv("DBUSER"),os.Getenv("DBPASSWORD"),os.Getenv("DBNAME"))
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println("Database connection error ",err)
 	}
 	repo := repository.NewRegionImpl(dbConn)
 	negara,_ := repo.GetCountry()
