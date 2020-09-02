@@ -9,30 +9,30 @@ package network
 
 import (
 	"fmt"
-	_ "github.com/lib/pq"
-	"database/sql"
+
+	model "github.com/aditya37/backend-jobs/api/model/Entity"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
 type _databaseConnection struct {
-	Database *sql.DB
+	Database *gorm.DB
 }
 
 func NewDatabaseConnection() DatabaseConnection {
 	return &_databaseConnection{}
 }
 
-func (s *_databaseConnection) DatabaseConn(host,port,username,password,dbname string) (*sql.DB,error){
-	
+func (s *_databaseConnection) DatabaseConn(host,port,username,password,dbname string) (*gorm.DB,error){
 	var err error
 	URL := fmt.Sprintf("host=%s port=%s user=%s dbname=%s sslmode=disable password=%s", host, port, username, dbname, password)
-	s.Database,err = sql.Open("postgres",URL)
+	s.Database,err = gorm.Open(postgres.Open(URL),&gorm.Config{})
 	if err != nil {
 		return nil,err
-	}
-
-	if err := s.Database.Ping(); err != nil {
-		return nil,err
-	}
-
+	}	
 	return s.Database,err
+}
+
+func (s *_databaseConnection) DatabaseMigrate() {
+	s.Database.AutoMigrate(&model.Country{},&model.District{},&model.Province{})
 }

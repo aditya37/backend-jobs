@@ -12,10 +12,10 @@ import (
 )
  
 type IRegionRepo interface {
-	AddDistrict(district *RegionEntity.District) (*RegionEntity.District,error)
-	AddCountry(country 	 *RegionEntity.Country)  (*RegionEntity.Country,error)
-	AddProvince(province *RegionEntity.Province) (*RegionEntity.Province,error)
-	GetDistrict()	([]RegionEntity.District,error)
-	GetCountry()	([]RegionEntity.Country,error)
-	GetProvince()	([]RegionEntity.Province,error)	
+	AddDistrict(district *RegionEntity.District) *RegionEntity.District
+	AddCountry(country 	 *RegionEntity.Country)  *RegionEntity.Country
+	AddProvince(province *RegionEntity.Province) *RegionEntity.Province
+	GetDistrict() []RegionEntity.District
+	GetCountry()  []RegionEntity.Country
+	GetProvince() []RegionEntity.Province
 }

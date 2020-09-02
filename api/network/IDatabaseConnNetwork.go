@@ -8,11 +8,12 @@
 package network
 
 import (
-	"database/sql"
+	"gorm.io/gorm"
 )
 
 type DatabaseConnection interface {
-	DatabaseConn(host,port,username,password,dbname string) (*sql.DB,error)
+	DatabaseConn(host,port,username,password,dbname string) (*gorm.DB,error)
+	DatabaseMigrate()
 }
 
  

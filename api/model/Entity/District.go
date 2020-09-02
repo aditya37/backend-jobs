@@ -8,6 +8,6 @@
 package model
 
 type District struct {
-	IdDistrict   int 	`json:idDistrict`
-	DistrictName string `json:districtName`
+	IdDistrict   int 	`gorm:"type:smallint;primary_key" json:idDistrict`
+	DistrictName string `gorm:"type:varchar(50)" json:districtName`
 }
