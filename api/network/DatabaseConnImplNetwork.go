@@ -10,7 +10,8 @@ package network
 import (
 	"fmt"
 
-	model "github.com/aditya37/backend-jobs/api/model/Entity"
+	model "github.com/aditya37/backend-jobs/api/model/Entity/Employe"
+
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -34,5 +35,5 @@ func (s *_databaseConnection) DatabaseConn(host,port,username,password,dbname st
 }
 
 func (s *_databaseConnection) DatabaseMigrate() {
-	s.Database.AutoMigrate(&model.Country{},&model.District{},&model.Province{})
+	s.Database.AutoMigrate(&model.EmployeAccount{},&model.EmployeAddress{},&model.EmployeAttachment{},&model.EmployeData{},&model.EmployeExperience{},&model.EmployeSocial{})
 }

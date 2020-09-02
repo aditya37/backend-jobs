@@ -10,11 +10,11 @@ package model
 import "time"
 
 type EmployeExperience struct {
-	CompanyName string `json:"companyName"`
-	JobTitle 	string `json:"jobTitle"`
-	JobDesc 	string `json:"jobDesc"`
-	IsActive 	string `json:"isActive"`
-	StartWork 	time.Time `json:"startWork"`
-	EndWork 	time.Time `json:"endWork"`
-	EmployeId	int		`json:"IdEmploye"`
+	CompanyName string `gorm:"type:VARCHAR(20);" json:"companyName"`
+	JobTitle 	string `gorm:"type:VARCHAR(20);" json:"jobTitle"`
+	JobDesc 	string `gorm:"type:VARCHAR(200);" json:"jobDesc"`
+	IsActive 	string `gorm:"type:CHAR(5);" json:"isActive"`
+	StartWork 	time.Time `gorm:"type:DATE" json:"startWork"`
+	EndWork 	time.Time `gorm:"type:DATE;" json:"endWork"`
+	EmployeId	int		`gorm:"type:SMALLINT;foreign_key;" json:"IdEmploye"`
 }

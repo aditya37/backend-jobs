@@ -8,10 +8,10 @@
 package model
 
 type EmployeSocial struct {
-	PortofolioLink string `json:"portofolioLink"`
-	GithubLink 	   string `json:"githubLink"`
-	LinkedinLink   string `json:"linkedinLink"`
-	BlogLink 	   string `json:"blogLink"`
-	TwitterLink    string `json:"twitterLink"`
-	EmployeId	   int	  `json:"IdEmploye"`
+	PortofolioLink string `gorm:"type:CHAR(100)" json:"portofolioLink"`
+	GithubLink 	   string `gorm:"type:CHAR(100)" json:"githubLink"`
+	LinkedinLink   string `gorm:"type:CHAR(100)" json:"linkedinLink"`
+	BlogLink 	   string `gorm:"type:CHAR(100)" json:"blogLink"`
+	TwitterLink    string `gorm:"type:CHAR(100)" json:"twitterLink"`
+	EmployeId	   int	  `gorm:"type:SMALLINT;foreign_key" json:"IdEmploye"`
 }

@@ -8,12 +8,10 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"log"
 	"os"
 
-	model "github.com/aditya37/backend-jobs/api/model"
 	"github.com/aditya37/backend-jobs/api/network"
 	"github.com/aditya37/backend-jobs/api/repository"
 	"github.com/joho/godotenv"
@@ -32,14 +30,7 @@ func main() {
 	if err != nil {
 		fmt.Println("Database connection error ",err)
 	}
+	connection.DatabaseMigrate()
 	repo := repository.NewRegionImpl(dbConn)
-	negara,_ := repo.GetCountry()
-	res := &model.SuccessResponse{
-		Status: 1,
-		Message: "Success",
-		Result: negara,
-	}
-	b,_ := json.Marshal(res)
-	fmt.Println(string(b))
-
+	repo.GetCountry()
 }

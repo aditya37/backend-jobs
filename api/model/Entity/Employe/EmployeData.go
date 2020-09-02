@@ -12,12 +12,12 @@ import (
 )
 
 type EmployeData struct {
-	FirstName 	string	`json:"firstName"`
-	LastName	string	`json:"lastName"`
-	Birth		time.Time `json:"birth"`
-	BirthPlace 	string	`json:"birthPlace"`
-	IsMale		string	`json:"isMale"`
-	Phone		int		`json:"phone"`
-	About		string	`json:"about"`
-	EmployeId	int		`json:"IdEmploye"`
+	FirstName 	string	`gorm:"type:VARCHAR(20);" json:"firstName"`
+	LastName	string	`gorm:"type:VARCHAR(200);" json:"lastName"`
+	Birth		time.Time `gorm:"type:DATE;" json:"birth"`
+	BirthPlace 	string	`gorm:"type:CHAR(20);" json:"birthPlace"`
+	IsMale		string	`gorm:"type:CHAR(5);" json:"isMale"`
+	Phone		int		`gorm:"type:INT;" json:"phone"`
+	About		string	`gorm:"type:VARCHAR(200);" json:"about"`
+	EmployeId	int		`gorm:"type:SMALLINT;foreign_key;" json:"IdEmploye"`
 }

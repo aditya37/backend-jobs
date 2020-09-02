@@ -8,7 +8,7 @@
 package model
 
 type EmployeAttachment struct {
-	PortofolioFile string `json:"portofolioFile"`
-	ResumeFile 	   string `json:"resumeFile"`
-	EmployeId	   int	  `json:"IdEmploye"`
+	PortofolioFile string `gorm:"type:CHAR(100);" json:"portofolioFile"`
+	ResumeFile 	   string `gorm:"type:CHAR(100);" json:"resumeFile"`
+	EmployeId	   int	  `gorm:"type:SMALLINT;foreign_key" json:"IdEmploye"`
 }
