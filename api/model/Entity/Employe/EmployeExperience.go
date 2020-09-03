@@ -16,5 +16,6 @@ type EmployeExperience struct {
 	IsActive 	string `gorm:"type:CHAR(5);" json:"isActive"`
 	StartWork 	time.Time `gorm:"type:DATE" json:"startWork"`
 	EndWork 	time.Time `gorm:"type:DATE;" json:"endWork"`
-	EmployeId	int		`gorm:"type:SMALLINT;foreign_key;" json:"IdEmploye"`
+	EmployeId	int		`gorm:"type:SMALLINT;" json:"IdEmploye"`
+	EmployeAccount EmployeAccount `gorm:"foreignkey:EmployeId"`
 }
