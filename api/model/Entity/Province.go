@@ -8,6 +8,5 @@
 package model
 
 type Province struct {
-	IdProvince 	 int 	`gorm:"type:smallint;primary_key" json:idProvince`
-	ProvinceName string `gorm:"type:varchar(50)" json:provinceName`
+	ProvinceName string `gorm:"type:varchar(50);primary_key;" json:provinceName`
 }

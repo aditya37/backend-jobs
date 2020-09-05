@@ -12,15 +12,15 @@ import (
 )
 
 type EmployeAddress struct {
-	IdCountry	int `gorm:"type:SMALLINT;" json:"idCountry"`
-	IdProvince	int `gorm:"type:SMALLINT;" json:"idProvince"`
-	IdDistrict  int `gorm:"type:SMALLINT;" json:"idDistrict"`
+	CountryName  string `gorm:"type:varchar(50);" json:countryName`
+	ProvinceName string `gorm:"type:varchar(50);" json:provinceName`
+	DistrictName string `gorm:"type:varchar(50);" json:districtName`
 	Address_1 	string `gorm:"type:VARCHAR(100);" json:"address_1"`
 	Address_2 	string `gorm:"type:VARCHAR(100);" json:"address_2"`
 	PostalCode  int	   `gorm:"type:SMALLINT" json:"postalCode"`
 	EmployeId	int	   `gorm:"type:SMALLINT;" json:"IdEmploye"`
-	Country 	model.Country  `gorm:"foreignkey:IdCountry"`
-	Province 	model.Province `gorm:"foreignkey:IdProvince"`
-	District 	model.District `gorm:"foreignkey:IdDistrict"`
-	EmployeAccount EmployeAccount `gorm:"foreignkey:EmployeId"`
+	Country 	model.Country  `gorm:"foreignkey:CountryName;constraint:OnUpdate:CASCADE,OnDelete:RESTRICT;"`
+	Province 	model.Province `gorm:"foreignkey:ProvinceName;constraint:OnUpdate:CASCADE,OnDelete:RESTRICT;"`
+	District 	model.District `gorm:"foreignkey:DistrictName;constrainr:OnUpdate:CASCADE,OnDelet:RESTRICT;"`
+	EmployeAccount EmployeAccount `gorm:"foreignkey:EmployeId;constraint:OnUpdate:NO ACTION,OnDelete:CASCADE;"`
 }

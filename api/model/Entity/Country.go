@@ -8,7 +8,5 @@
 package model
 
 type Country struct {
-	// gorm.Model
-	IdCountry 	int		`gorm:"type:smallint;primary_key" json:idCountry`
-	CountryName string 	`gorm:"type:varchar(50)" json:countryName`
+	CountryName string 	`gorm:"type:varchar(50);primary_key;" json:countryName`
 }

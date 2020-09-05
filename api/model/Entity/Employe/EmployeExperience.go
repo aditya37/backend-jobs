@@ -17,5 +17,5 @@ type EmployeExperience struct {
 	StartWork 	time.Time `gorm:"type:DATE" json:"startWork"`
 	EndWork 	time.Time `gorm:"type:DATE;" json:"endWork"`
 	EmployeId	int		`gorm:"type:SMALLINT;" json:"IdEmploye"`
-	EmployeAccount EmployeAccount `gorm:"foreignkey:EmployeId"`
+	EmployeAccount EmployeAccount `gorm:"foreignkey:EmployeId;constraint:OnUpdate:NO ACTION,OnDelete:CASCADE;"`
 }

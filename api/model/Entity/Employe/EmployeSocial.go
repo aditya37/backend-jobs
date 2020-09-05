@@ -14,5 +14,5 @@ type EmployeSocial struct {
 	BlogLink 	   string `gorm:"type:CHAR(100)" json:"blogLink"`
 	TwitterLink    string `gorm:"type:CHAR(100)" json:"twitterLink"`
 	EmployeId	   int	  `gorm:"type:SMALLINT;" json:"IdEmploye"`
-	EmployeAccount EmployeAccount `gorm:"foreignkey:EmployeId"`
+	EmployeAccount EmployeAccount `gorm:"foreignkey:EmployeId;constraint:OnUpdate:NO ACTION,OnDelete:CASCADE;"`
 }

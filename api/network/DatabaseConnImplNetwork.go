@@ -10,6 +10,8 @@ package network
 import (
 	"fmt"
 
+	region "github.com/aditya37/backend-jobs/api/model/Entity"
+
 	model "github.com/aditya37/backend-jobs/api/model/Entity/Employe"
 
 	"gorm.io/driver/postgres"
@@ -27,7 +29,9 @@ func NewDatabaseConnection() DatabaseConnection {
 func (s *_databaseConnection) DatabaseConn(host,port,username,password,dbname string) (*gorm.DB,error){
 	var err error
 	URL := fmt.Sprintf("host=%s port=%s user=%s dbname=%s sslmode=disable password=%s", host, port, username, dbname, password)
-	s.Database,err = gorm.Open(postgres.Open(URL),&gorm.Config{})
+	s.Database,err = gorm.Open(postgres.Open(URL),&gorm.Config{
+		DisableForeignKeyConstraintWhenMigrating: false,
+	})
 	if err != nil {
 		return nil,err
 	}	
@@ -35,5 +39,5 @@ func (s *_databaseConnection) DatabaseConn(host,port,username,password,dbname st
 }
 
 func (s *_databaseConnection) DatabaseMigrate() {
-	s.Database.AutoMigrate(&model.EmployeAccount{},&model.EmployeAddress{},&model.EmployeAttachment{},&model.EmployeData{},&model.EmployeExperience{},&model.EmployeSocial{})
+	s.Database.AutoMigrate(&model.EmployeAccount{},&model.EmployeAddress{},&model.EmployeAttachment{},&model.EmployeData{},&model.EmployeExperience{},&model.EmployeSocial{},&region.Country{},&region.District{},&region.Province{})
 }

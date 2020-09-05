@@ -20,5 +20,5 @@ type EmployeData struct {
 	Phone		int		`gorm:"type:INT;" json:"phone"`
 	About		string	`gorm:"type:VARCHAR(200);" json:"about"`
 	EmployeId	int		`gorm:"type:SMALLINT;" json:"IdEmploye"`
-	EmployeAccount EmployeAccount `gorm:"foreignkey:EmployeId"`
+	EmployeAccount EmployeAccount `gorm:"foreignkey:EmployeId;constraint:OnUpdate:NO ACTION,OnDelete:CASCADE;"`
 }
