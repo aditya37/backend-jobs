@@ -13,7 +13,6 @@ import (
 	"os"
 
 	"github.com/aditya37/backend-jobs/api/network"
-	"github.com/aditya37/backend-jobs/api/repository"
 	"github.com/joho/godotenv"
 )
 
@@ -30,7 +29,6 @@ func main() {
 	if err != nil {
 		fmt.Println("Database connection error ",err)
 	}
+	fmt.Println(dbConn)
 	connection.DatabaseMigrate()
-	repo := repository.NewRegionImpl(dbConn)
-	repo.GetCountry()
 }

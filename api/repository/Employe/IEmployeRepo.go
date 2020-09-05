@@ -12,10 +12,10 @@ import (
 )
 
 type IEmployeRepo interface {
-	RegisterEmploye(addEmploye *model.EployeAccount) (*model.EployeAccount,error)
-	AddEmployeData(employeData *model.EmployeData) 	(*model.EmployeData,error)
-	AddEmployeAddress(employeAddr *model.EmployeAddress) (*model.EmployeAddress,error)
-	AddEmployeAttachment(employeAttach *model.EmployeAttachment) (*model.EmployeAttachment,error)
-	AddEmployeSocial(employeSocial *model.EmployeSocial) (*model.EmployeSocial,error)
-	AddEmployeExperience(experience *model.EmployeExperience)(*model.EmployeExperience,error)
+	RegisterEmploye(addEmploye *model.EmployeAccount) *model.EmployeAccount
+	AddEmployeData(employeData *model.EmployeData) 	  *model.EmployeData
+	AddEmployeAddress(employeAddr *model.EmployeAddress) *model.EmployeAddress
+	AddEmployeAttachment(employeAttach *model.EmployeAttachment) *model.EmployeAttachment
+	AddEmployeSocial(employeSocial *model.EmployeSocial) *model.EmployeSocial
+	AddEmployeExperience(experience *model.EmployeExperience) *model.EmployeExperience
 }

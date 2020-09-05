@@ -6,3 +6,6 @@ DROP TABLE IF EXISTS tbl_employe_address CASCADE;
 DROP TABLE IF EXISTS tbl_employe_data CASCADE;
 DROP TABLE IF EXISTS tbl_employe_social_media CASCADE;
 DROP TABLE IF EXISTS tbl_province CASCADE;
+DROP TABLE IF EXISTS tbl_employe_education;
+DROP TABLE IF EXISTS tbl_employe_attachment;
+DROP TABLE IF EXISTS tbl_employe_experience;

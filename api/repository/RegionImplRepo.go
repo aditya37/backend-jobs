@@ -22,19 +22,19 @@ func NewRegionImpl(dbClient *gorm.DB) IRegionRepo {
 
 // Add District
 func (p *RegionImpl) AddDistrict(district *model.District) *model.District {
-	p.database.Save(&district)
+	p.database.Create(&district)
 	return district
 }
 
 // Add Country
 func (p *RegionImpl) AddCountry(country *model.Country) *model.Country {
-	p.database.Save(&country)
+	p.database.Create(&country)
 	return country
 }
 
 // Add Province
 func (p *RegionImpl) AddProvince(province *model.Province) *model.Province {
-	p.database.Save(&province)
+	p.database.Create(&province)
 	return province
 }
 
