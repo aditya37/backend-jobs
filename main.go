@@ -8,16 +8,20 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"os"
 
-	"github.com/aditya37/backend-jobs/api/network"
+	network "github.com/aditya37/backend-jobs/api/Model/Network"
+
+	repository "github.com/aditya37/backend-jobs/api/Repository/Employe"
 	"github.com/joho/godotenv"
 )
 
 var (
 	connection network.DatabaseConnection = network.NewDatabaseConnection()
+	
 )
 
 func main() {
@@ -29,6 +33,18 @@ func main() {
 	if err != nil {
 		fmt.Println("Database connection error ",err)
 	}
-	fmt.Println(dbConn)
 	connection.DatabaseMigrate()
+	repo := repository.NewEmployeImpl(dbConn)
+	x := repo.GetEmployeById(2)
+
+	for _,hasil := range x {
+		jsonValue, _ := json.MarshalIndent(hasil,""," ")
+		fmt.Printf(string(jsonValue))
+	}
+	// jsonValue, _ := json.MarshalIndent(x,""," ")
+	// fmt.Printf(string(jsonValue))
+	
+	// service := service.NewRegionService(repo)
+
+	// fmt.Println(service.GetCountry())
 }

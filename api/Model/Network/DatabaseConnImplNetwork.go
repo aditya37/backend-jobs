@@ -5,14 +5,13 @@
  * Copyright (c) 2020
  */
 
-package network
+package Model
 
 import (
 	"fmt"
 
-	region "github.com/aditya37/backend-jobs/api/model/Entity"
-
-	model "github.com/aditya37/backend-jobs/api/model/Entity/Employe"
+	region "github.com/aditya37/backend-jobs/api/Model/Entity"
+	model "github.com/aditya37/backend-jobs/api/Model/Entity/Employe"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -24,6 +23,7 @@ type _databaseConnection struct {
 
 func NewDatabaseConnection() DatabaseConnection {
 	return &_databaseConnection{}
+	
 }
 
 func (s *_databaseConnection) DatabaseConn(host,port,username,password,dbname string) (*gorm.DB,error){
@@ -39,5 +39,6 @@ func (s *_databaseConnection) DatabaseConn(host,port,username,password,dbname st
 }
 
 func (s *_databaseConnection) DatabaseMigrate() {
-	s.Database.AutoMigrate(&model.EmployeAccount{},&model.EmployeAddress{},&model.EmployeAttachment{},&model.EmployeData{},&model.EmployeExperience{},&model.EmployeSocial{},&region.Country{},&region.District{},&region.Province{})
+	// s.Database.Migrator().DropTable(&model.EmployeAccount{},&model.EmployeAddress{},&model.EmployeAttachment{},&model.EmployeData{},&model.EmployeExperience{},&model.EmployeSocial{},&model.EmployeEducation{},&region.Country{},&region.District{},&region.Province{})
+	s.Database.AutoMigrate(&model.EmployeAccount{},&model.EmployeAddress{},&model.EmployeAttachment{},&model.EmployeData{},&model.EmployeExperience{},&model.EmployeSocial{},&model.EmployeEducation{},&region.Country{},&region.District{},&region.Province{})
 }

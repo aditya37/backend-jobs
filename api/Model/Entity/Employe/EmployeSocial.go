@@ -5,7 +5,7 @@
  * Copyright (c) 2020
  */
 
-package model
+package Model
 
 type EmployeSocial struct {
 	PortofolioLink string `gorm:"type:CHAR(100)" json:"portofolioLink"`
@@ -13,6 +13,5 @@ type EmployeSocial struct {
 	LinkedinLink   string `gorm:"type:CHAR(100)" json:"linkedinLink"`
 	BlogLink 	   string `gorm:"type:CHAR(100)" json:"blogLink"`
 	TwitterLink    string `gorm:"type:CHAR(100)" json:"twitterLink"`
-	EmployeId	   int	  `gorm:"type:SMALLINT;" json:"IdEmploye"`
-	EmployeAccount EmployeAccount `gorm:"foreignkey:EmployeId;constraint:OnUpdate:NO ACTION,OnDelete:CASCADE;"`
+	EmployeId 		int `gorm:"type:SMALLINT;NOT NULL;" json:"employeID"`
 }

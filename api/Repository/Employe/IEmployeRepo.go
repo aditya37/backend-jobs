@@ -5,10 +5,10 @@
  * Copyright (c) 2020
  */
 
-package repository
+package Repository
 
 import (
-	model "github.com/aditya37/backend-jobs/api/model/Entity/Employe"
+	model "github.com/aditya37/backend-jobs/api/Model/Entity/Employe"
 )
 
 type IEmployeRepo interface {
@@ -18,4 +18,7 @@ type IEmployeRepo interface {
 	AddEmployeAttachment(employeAttach *model.EmployeAttachment) *model.EmployeAttachment
 	AddEmployeSocial(employeSocial *model.EmployeSocial) *model.EmployeSocial
 	AddEmployeExperience(experience *model.EmployeExperience) *model.EmployeExperience
+	AddEmployeEducation(employeEdu *model.EmployeEducation) *model.EmployeEducation
+	DeleteAccount(employeId int) error
+	GetEmployeById(employeId int) []model.EmployeAccount
 }

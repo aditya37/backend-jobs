@@ -5,7 +5,7 @@
  * Copyright (c) 2020
  */
 
-package model
+package Model
 
 import (
 	"time"
@@ -19,6 +19,5 @@ type EmployeData struct {
 	IsMale		string	`gorm:"type:CHAR(5);" json:"isMale"`
 	Phone		int		`gorm:"type:INT;" json:"phone"`
 	About		string	`gorm:"type:VARCHAR(200);" json:"about"`
-	EmployeId	int		`gorm:"type:SMALLINT;" json:"IdEmploye"`
-	EmployeAccount EmployeAccount `gorm:"foreignkey:EmployeId;constraint:OnUpdate:NO ACTION,OnDelete:CASCADE;"`
+	EmployeId 	int 	`gorm:"type:SMALLINT;NOT NULL;" json:"employeID"`
 }

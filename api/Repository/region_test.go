@@ -8,8 +8,8 @@
 package repository_test
 
 import (
-	model "github.com/aditya37/backend-jobs/api/model/Entity"
-	"github.com/aditya37/backend-jobs/api/repository"
+	model "github.com/aditya37/backend-jobs/api/Model/Entity"
+	repository "github.com/aditya37/backend-jobs/api/Repository"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"gorm.io/driver/postgres"

@@ -5,11 +5,12 @@
  * Copyright (c) 2020
  */
 
-package repository
+package Repository
 
 import (
-	model "github.com/aditya37/backend-jobs/api/model/Entity/Employe"
+	model "github.com/aditya37/backend-jobs/api/Model/Entity/Employe"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type EmployeImpl struct {
@@ -48,4 +49,20 @@ func (e *EmployeImpl) AddEmployeSocial(employeSocial *model.EmployeSocial) *mode
 func (e *EmployeImpl) AddEmployeExperience(experience *model.EmployeExperience) *model.EmployeExperience {
 	e.Database.Create(&experience)
 	return experience
+}
+
+func (e *EmployeImpl) AddEmployeEducation(employeEdu *model.EmployeEducation) *model.EmployeEducation {
+	e.Database.Create(&employeEdu)
+	return employeEdu
+}
+
+func (e *EmployeImpl) GetEmployeById(employeId int) []model.EmployeAccount{
+	var result []model.EmployeAccount
+	e.Database.Model(&model.EmployeAccount{}).Preload(clause.Associations).Where("employe_accounts.id=?",employeId).Find(&result)
+	return result
+}
+
+func (e *EmployeImpl) DeleteAccount(employeId int) error {
+	e.Database.Delete(&model.EmployeAccount{},employeId)
+	return nil
 }

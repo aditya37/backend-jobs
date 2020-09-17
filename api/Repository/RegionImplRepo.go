@@ -8,7 +8,7 @@
 package repository
 
 import (
-	model "github.com/aditya37/backend-jobs/api/model/Entity"
+	model "github.com/aditya37/backend-jobs/api/Model/Entity"
 	"gorm.io/gorm"
 )
 

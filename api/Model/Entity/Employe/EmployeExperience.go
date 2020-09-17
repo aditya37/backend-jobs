@@ -5,9 +5,11 @@
  * Copyright (c) 2020
  */
 
-package model
+package Model
 
-import "time"
+import (
+	"time"
+)
 
 type EmployeExperience struct {
 	CompanyName string `gorm:"type:VARCHAR(20);" json:"companyName"`
@@ -17,5 +19,4 @@ type EmployeExperience struct {
 	StartWork 	time.Time `gorm:"type:DATE" json:"startWork"`
 	EndWork 	time.Time `gorm:"type:DATE;" json:"endWork"`
 	EmployeId	int		`gorm:"type:SMALLINT;" json:"IdEmploye"`
-	EmployeAccount EmployeAccount `gorm:"foreignkey:EmployeId;constraint:OnUpdate:NO ACTION,OnDelete:CASCADE;"`
 }

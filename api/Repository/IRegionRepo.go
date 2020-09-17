@@ -8,7 +8,7 @@
 package repository
 
 import (
-	RegionEntity "github.com/aditya37/backend-jobs/api/model/Entity"
+	RegionEntity "github.com/aditya37/backend-jobs/api/Model/Entity"
 )
  
 type IRegionRepo interface {
