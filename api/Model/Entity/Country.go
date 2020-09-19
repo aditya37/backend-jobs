@@ -5,8 +5,8 @@
  * Copyright (c) 2020
  */
 
-package Model
+package model
 
 type Country struct {
-	CountryName string 	`gorm:gorm:"type:varchar(50);primary_key;" json:countryName`
+	CountryName string 	`gorm:gorm:"type:varchar(50);primary_key;" json:country_name`
 }

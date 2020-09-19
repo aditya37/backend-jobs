@@ -5,8 +5,8 @@
  * Copyright (c) 2020
  */
 
-package Model
+package model
 
 type District struct {
-	DistrictName string `gorm:gorm:"type:varchar(50);primary_key;" json:districtName`
+	DistrictName string `gorm:gorm:"type:varchar(50);primary_key;" json:district_name`
 }

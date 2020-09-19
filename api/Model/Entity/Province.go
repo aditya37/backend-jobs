@@ -5,8 +5,8 @@
  * Copyright (c) 2020
  */
 
-package Model
+package model
 
 type Province struct {
-	ProvinceName string `gorm:"type:varchar(50);primary_key;" json:provinceName`
+	ProvinceName string `gorm:"type:varchar(50);primary_key;" json:province_name`
 }
