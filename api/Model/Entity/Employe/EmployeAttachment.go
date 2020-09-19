@@ -5,10 +5,10 @@
  * Copyright (c) 2020
  */
 
-package Model
+package model
 
 type EmployeAttachment struct {
-	PortofolioFile string `gorm:"type:CHAR(100);" json:"portofolioFile"`
-	ResumeFile 	   string `gorm:"type:CHAR(100);" json:"resumeFile"`
-	EmployeId 	   int `json:"employeID"`
+	PortofolioFile string `gorm:"type:CHAR(100);" json:"portofolio_file"`
+	ResumeFile 	   string `gorm:"type:CHAR(100);" json:"resume_file"`
+	EmployeId 	   int `json:"-"`
 }

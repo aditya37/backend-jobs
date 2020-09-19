@@ -5,7 +5,7 @@
  * Copyright (c) 2020
  */
 
-package Model
+package model
 
 type EmployeSocial struct {
 	PortofolioLink string `gorm:"type:CHAR(100)" json:"portofolioLink"`

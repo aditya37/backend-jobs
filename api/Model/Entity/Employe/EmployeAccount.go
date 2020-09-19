@@ -5,7 +5,7 @@
  * Copyright (c) 2020
  */
 
-package Model
+package model
 
 import (
 	"time"
@@ -13,15 +13,16 @@ import (
 
 type EmployeAccount struct {
 	Id		 int	`gorm:"type:SMALLINT;primary_key" json:"idEmploye"`
-	Username string `gorm:"type:VARCHAR(12)" json:"username"`
-	Password string `gorm:"type:CHAR(16)" json:"password"`
-	PhotoProfile string `gorm:"type:CHAR(100); json:"photoProfile"`
-	RefreshToken string `gorm:"VARCHAR(20)" json:"refreshToken"`
-	DateCreate time.Time `gorm:"default:CURRENT_TIMESTAMP;" json:"DateCreate"`
-	DateUpdate time.Time `gorm:"default:CURRENT_TIMESTAMP;" json:"DateUpdate"`
-	EmployeExperience  []EmployeExperience `gorm:"foreignKey:EmployeId;constraint:OnUpdate:NO ACTION,OnDelete:CASCADE;NOT NULL;references:id"`
-	EmployeAttachments EmployeAttachment  `gorm:"foreignKey:EmployeId;constraint:OnUpdate:NO ACTION,OnDelete:CASCADE;NOT NULL;references:id"`
-	EmployeAddress	   EmployeAddress	  `gorm:"foreignKey:EmployeId;constraint:OnUpdate:NO ACTION,OnDelete:CASCADE;NOT NULL;references:id"`
-	EmployeEducations  []EmployeEducation `gorm:"foreignKey:EmployeId;constraint:OnUpdate:NO ACTION,OnDelete:CASCADE;NOT NULL;references:id"`
-	EmployeDatas 	   EmployeData		  `gorm:"foreignKey:EmployeId;constraint:OnUpdate:NO ACTION,OnDelete:CASCADE;NOT NULL;references:id"`
+	Username string `gorm:"type:VARCHAR(12);" json:"username"`
+	Password string `gorm:"type:CHAR(60);" json:"-"`
+	Email 	 string `gorm:"type:VARCHAR(60);" json:"email"`
+	PhotoProfile string `gorm:"type:CHAR(100);" json:"photo_profile"`
+	RefreshToken string `gorm:"VARCHAR(20);" json:"refresh_token"`
+	DateCreate time.Time `gorm:"default:CURRENT_TIMESTAMP;" json:"date_create"`
+	DateUpdate time.Time `gorm:"default:CURRENT_TIMESTAMP;" json:"date_update"`
+	EmployeExperience  []EmployeExperience `gorm:"foreignKey:EmployeId;constraint:OnUpdate:NO ACTION,OnDelete:CASCADE;NOT NULL;references:id;" json:"employe_experiences"`
+	EmployeAttachments EmployeAttachment  `gorm:"foreignKey:EmployeId;constraint:OnUpdate:NO ACTION,OnDelete:CASCADE;NOT NULL;references:id;"  json:"employe_attachments"`
+	EmployeAddress	   EmployeAddress	  `gorm:"foreignKey:EmployeId;constraint:OnUpdate:NO ACTION,OnDelete:CASCADE;NOT NULL;references:id;"  json:"employe_address"`
+	EmployeEducations  []EmployeEducation `gorm:"foreignKey:EmployeId;constraint:OnUpdate:NO ACTION,OnDelete:CASCADE;NOT NULL;references:id;"  json:"employe_educations"`
+	EmployeDatas 	   EmployeData		  `gorm:"foreignKey:EmployeId;constraint:OnUpdate:NO ACTION,OnDelete:CASCADE;NOT NULL;references:id;"  json:"employe_datas"`
 }

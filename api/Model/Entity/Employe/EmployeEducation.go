@@ -5,16 +5,16 @@
  * Copyright (c) 2020
  */
 
-package Model
+package model
 
 import "time"
 
 type EmployeEducation struct {
-	InstitutionName	string `gorm:"type:VARCHAR(20);" json:"institutionName"`
+	InstitutionName	string `gorm:"type:VARCHAR(20);" json:"institution_name"`
 	Degree			string `gorm:"type:VARCHAR(20);" json:"degree"`
-	Certificate		string `gorm:"type:CHAR(20);" 	 json:"certificateLink"`
+	Certificate		string `gorm:"type:CHAR(20);" 	 json:"certificate_link"`
 	IsActive 		string `gorm:"type:CHAR(5);" json:"IsActive"`
-	StartEducation 	time.Time `gorm:"type:DATE;" json:"startEducation"`
-	EndEducation 	time.Time `gorm:"type:DATE;" json:"endEducation"`
-	EmployeId 		int `gorm:"type:SMALLINT;NOT NULL;" json:"employeID"`
+	StartEducation 	time.Time `gorm:"type:DATE;" json:"start_education"`
+	EndEducation 	time.Time `gorm:"type:DATE;" json:"end_education"`
+	EmployeId 		int `gorm:"type:SMALLINT;NOT NULL;" json:"-"`
 }

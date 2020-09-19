@@ -5,7 +5,7 @@
  * Copyright (c) 2020
  */
 
-package Model
+package model
 
 import (
 	"time"
@@ -18,5 +18,5 @@ type EmployeExperience struct {
 	IsActive 	string `gorm:"type:CHAR(5);" json:"isActive"`
 	StartWork 	time.Time `gorm:"type:DATE" json:"startWork"`
 	EndWork 	time.Time `gorm:"type:DATE;" json:"endWork"`
-	EmployeId	int		`gorm:"type:SMALLINT;" json:"IdEmploye"`
+	EmployeId	int		`gorm:"type:SMALLINT;" json:"-"`
 }
