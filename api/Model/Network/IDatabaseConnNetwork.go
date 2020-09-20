@@ -5,7 +5,7 @@
  * Copyright (c) 2020
  */
 
-package Model
+package model
 
 import (
 	"gorm.io/gorm"
