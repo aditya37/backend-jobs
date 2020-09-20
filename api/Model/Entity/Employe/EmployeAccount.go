@@ -18,6 +18,7 @@ type EmployeAccount struct {
 	Email 	 string `gorm:"type:VARCHAR(60);" json:"email"`
 	PhotoProfile string `gorm:"type:CHAR(100);" json:"photo_profile"`
 	RefreshToken string `gorm:"VARCHAR(20);" json:"refresh_token"`
+	IsActive 	 string `gorm:"CHAR(5);" json:"isActive"`
 	DateCreate time.Time `gorm:"default:CURRENT_TIMESTAMP;" json:"date_create"`
 	DateUpdate time.Time `gorm:"default:CURRENT_TIMESTAMP;" json:"date_update"`
 	EmployeExperience  []EmployeExperience `gorm:"foreignKey:EmployeId;constraint:OnUpdate:NO ACTION,OnDelete:CASCADE;NOT NULL;references:id;" json:"employe_experiences"`
