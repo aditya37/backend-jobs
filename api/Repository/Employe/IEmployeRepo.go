@@ -5,20 +5,22 @@
  * Copyright (c) 2020
  */
 
-package Repository
+package repository
 
 import (
 	model "github.com/aditya37/backend-jobs/api/Model/Entity/Employe"
 )
 
 type IEmployeRepo interface {
-	RegisterEmploye(addEmploye *model.EmployeAccount) *model.EmployeAccount
-	AddEmployeData(employeData *model.EmployeData) 	  *model.EmployeData
-	AddEmployeAddress(employeAddr *model.EmployeAddress) *model.EmployeAddress
-	AddEmployeAttachment(employeAttach *model.EmployeAttachment) *model.EmployeAttachment
-	AddEmployeSocial(employeSocial *model.EmployeSocial) *model.EmployeSocial
+	RegisterEmploye(addEmploye *model.EmployeAccount) (*model.EmployeAccount,error)
+	EmployeLogin(username,password string) ([]model.EmployeAccount,error)
+	AddEmployeData(employeData *model.EmployeData) 	  (*model.EmployeData,error)
+	AddEmployeAddress(employeAddr *model.EmployeAddress) (*model.EmployeAddress,error)
+	AddEmployeAttachment(employeAttach *model.EmployeAttachment) (*model.EmployeAttachment,error)
+	AddEmployeSocial(employeSocial *model.EmployeSocial) (*model.EmployeSocial,error)
 	AddEmployeExperience(experience *model.EmployeExperience) *model.EmployeExperience
 	AddEmployeEducation(employeEdu *model.EmployeEducation) *model.EmployeEducation
 	DeleteAccount(employeId int) error
 	GetEmployeById(employeId int) []model.EmployeAccount
+	EmployeEmailVerify(refreshToken string) error
 }
