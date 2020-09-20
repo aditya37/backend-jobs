@@ -1,4 +1,4 @@
-package Repository_test
+package repository_test
 
 import (
 	"time"
@@ -23,17 +23,39 @@ var _ = Describe("EmployeRepository", func() {
 	})
 	
 	It("RegisterEmploye",func() {
-		RegisterEmploye := &model.EmployeAccount{
-			Id: 2,
-			Username: "Aditya",
+		account := &model.EmployeAccount{
+			Id: 1,
+			Username: "aditya",
 			Password: "lymousin",
-			PhotoProfile: "https://bit.ly/xnxxx",
-			RefreshToken: "11111",
+			Email: "aditya.krohman@gmail.com",
+			PhotoProfile: "google.com",
+			RefreshToken: "9999",
 			DateCreate: time.Now(),
 			DateUpdate: time.Now(),
 		}
-		insert := repo.RegisterEmploye(RegisterEmploye)
-		Expect(insert.Username).To(Equal("Aditya"))
+		regsiter,err := repo.RegisterEmploye(account)
+		if err != nil {
+			Skip(err.Error())
+		}
+		Expect(regsiter.Username).To(Equal("aditya"))
+	})
+	
+	It("VerifyEmployeToken",func() {
+		Tokens := model.EmployeAccount{RefreshToken: "9999"}
+		err := repo.EmployeEmailVerify(Tokens.RefreshToken)
+		if err != nil {
+			Skip(err.Error())
+		}
+		Expect(err).To(BeNil())
+	})
+	
+	It("LoginEmploye",func() {
+		Login := &model.EmployeAccount{Username: "aditya",Password:"lymousin"}
+		DoLogin,err := repo.EmployeLogin(Login.Username,Login.Password)
+		if err != nil {
+			Skip(err.Error())
+		}
+		Expect(DoLogin[0].Username).To(Equal("aditya"))
 	})
 
 	It("AddEmployeData",func() {
@@ -45,10 +67,13 @@ var _ = Describe("EmployeRepository", func() {
 			IsMale: "True",
 			Phone: 6282257152133,
 			About: "Dahlah",
-			EmployeId: 2,
+			EmployeId: 1,
 		}
-		AddEmployeData := repo.AddEmployeData(EmployeData)
-		Expect(AddEmployeData.EmployeId).To(Equal(2))
+		AddEmployeData,err := repo.AddEmployeData(EmployeData)
+		if err != nil {
+			Skip(err.Error())
+		}
+		Expect(AddEmployeData.EmployeId).To(Equal(1))
 	})
 
 	It("AddEmployeAddress",func() {
@@ -59,30 +84,42 @@ var _ = Describe("EmployeRepository", func() {
 			Address_1: "Jln Haryo Matahun No 1",
 			Address_2: "Rt 02 rw 02",
 			PostalCode: 62171,
-			EmployeId: 2,
+			EmployeId: 1,
 		}
-		repo.AddEmployeAddress(EmployeAddress)
+		employeAddresses,err := repo.AddEmployeAddress(EmployeAddress)
+		if err != nil {
+			Skip(string(err.Error()))
+		}
+		Expect(employeAddresses.CountryName).To(Equal("Indonesia"))
 	})
 
 	It("AddEmployeAttachment",func() {
 		EmployeAttachment := &model.EmployeAttachment{
 			PortofolioFile: "https://bit.ly/xVxdf",
 			ResumeFile: "https://github.io/aditya37",
-			EmployeId: 2,
+			EmployeId: 1,
 		}
-		repo.AddEmployeAttachment(EmployeAttachment)
+		attachment,err := repo.AddEmployeAttachment(EmployeAttachment)
+		if err != nil {
+			Skip(err.Error())
+		}
+		Expect(attachment.EmployeId).To(Equal(1))
 	})
 
 	It("AddEmployeSocial",func() {
 		EmployeSocial := &model.EmployeSocial{
 			PortofolioLink: "https://bit.ly/xVxdf",
-			GithubLink: "adity37",
+			GithubLink: "aditya37",
 			LinkedinLink: "google.com",
 			BlogLink: "blog",
 			TwitterLink: "kangcode",
-			EmployeId: 2,
+			EmployeId: 1,
 		}
-		repo.AddEmployeSocial(EmployeSocial)
+		social,err := repo.AddEmployeSocial(EmployeSocial)
+		if err != nil {
+			Skip(err.Error())
+		}
+		Expect(social.EmployeId).To(Equal(1))
 	})
 
 	It("AddEmployeExperience",func() {
@@ -93,10 +130,11 @@ var _ = Describe("EmployeRepository", func() {
 			IsActive: "True",
 			StartWork: time.Now(),
 			EndWork: time.Now(),
-			EmployeId: 2,
+			EmployeId: 1,
 		}
 		repo.AddEmployeExperience(EmployeExp)
 	})
+
 	It("AddEmployeEducation",func() {
 		EmployeEdu := &model.EmployeEducation{
 			InstitutionName: "Polinema",
@@ -105,26 +143,21 @@ var _ = Describe("EmployeRepository", func() {
 			IsActive: "True",
 			StartEducation: time.Now(),
 			EndEducation: time.Now(),
-			EmployeId: 2,
+			EmployeId: 1,
 		}
 		repo.AddEmployeEducation(EmployeEdu)
 	})
+	
+	It("GetEmployeId",func() {
+		GetEmployeById := repo.GetEmployeById(1)
+	if len(GetEmployeById) <= 0 {
+		Skip("User belum lengkap")
+	}
+	Expect(GetEmployeById[0].Id).To(Equal(1))
+	})
 
-	// It("DeleteAccount",func() {
-	// 	RegisterEmploye := &model.EmployeAccount{
-	// 		Id: 1,
-	// 		Username: "Aditya",
-	// 		Password: "lymousin",
-	// 		PhotoProfile: "https://bit.ly/xnxxx",
-	// 		RefreshToken: "11111",
-	// 		DateCreate: time.Now(),
-	// 		DateUpdate: time.Now(),
-	// 	}
-	// 	repo.DeleteAccount(RegisterEmploye.Id)
-	// })
-
-	It("GetEmployeById",func() {
-		
+	It("DeleteEmployeAccountById",func() {
+		repo.DeleteAccount(1)
 	})
 
 	AfterEach(func(){
