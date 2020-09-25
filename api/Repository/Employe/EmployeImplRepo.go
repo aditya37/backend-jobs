@@ -78,10 +78,10 @@ func (e *EmployeImpl) EmployeLogin(username,password string) ([]model.EmployeAcc
 	return EmployeAccount,nil
 }
 
-func (e *EmployeImpl) EmployeEmailVerify(refreshToken string) error {
+func (e *EmployeImpl) EmployeEmailVerify(email string) error {
 	
 	TempData := &model.EmployeAccount{}
-	if err = e.Database.Debug().Table("employe_accounts").Select("username,is_active").Where("refresh_token=?",refreshToken).Find(TempData).Error; err != nil {
+	if err = e.Database.Debug().Table("employe_accounts").Select("username,is_active").Where("email=?",email).Find(TempData).Error; err != nil {
 		return err
 	}
 
@@ -90,7 +90,7 @@ func (e *EmployeImpl) EmployeEmailVerify(refreshToken string) error {
 		return errors.New("Data Not Found")
 	}
 
-	err = e.Database.Table("employe_accounts").Where("refresh_token=?",refreshToken).Update("is_active","True").Error
+	err = e.Database.Table("employe_accounts").Where("email=?",email).Update("is_active","True").Error
 	if err != nil {
 		return err
 	}

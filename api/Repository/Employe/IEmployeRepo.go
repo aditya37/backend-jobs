@@ -22,5 +22,5 @@ type IEmployeRepo interface {
 	AddEmployeEducation(employeEdu *model.EmployeEducation) *model.EmployeEducation
 	DeleteAccount(employeId int) error
 	GetEmployeById(employeId int) []model.EmployeAccount
-	EmployeEmailVerify(refreshToken string) error
+	EmployeEmailVerify(email string) error
 }
