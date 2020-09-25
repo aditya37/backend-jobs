@@ -16,5 +16,5 @@ type EmployeEducation struct {
 	IsActive 		string `gorm:"type:CHAR(5);" json:"IsActive"`
 	StartEducation 	time.Time `gorm:"type:DATE;" json:"start_education"`
 	EndEducation 	time.Time `gorm:"type:DATE;" json:"end_education"`
-	EmployeId 		int `gorm:"type:SMALLINT;NOT NULL;" json:"-"`
+	EmployeId 		int64 `gorm:"type:INTEGER;NOT NULL;" json:"-"`
 }

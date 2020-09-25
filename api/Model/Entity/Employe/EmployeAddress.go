@@ -14,5 +14,5 @@ type EmployeAddress struct {
 	Address_1 	string `gorm:"type:VARCHAR(100);" json:"address_1"`
 	Address_2 	string `gorm:"type:VARCHAR(100);" json:"address_2"`
 	PostalCode  int	   `gorm:"type:INT;" json:"postal_code"`
-	EmployeId	int	   `gorm:"type:SMALLINT;"json:"-"`
+	EmployeId	int64	`gorm:"type:INTEGER;"json:"-"`
 }

@@ -13,5 +13,5 @@ type EmployeSocial struct {
 	LinkedinLink   string `gorm:"type:CHAR(100)" json:"linkedinLink"`
 	BlogLink 	   string `gorm:"type:CHAR(100)" json:"blogLink"`
 	TwitterLink    string `gorm:"type:CHAR(100)" json:"twitterLink"`
-	EmployeId 		int `gorm:"type:SMALLINT;NOT NULL;" json:"employeID"`
+	EmployeId 	   int64 `gorm:"type:INTEGER;NOT NULL;" json:"-"`
 }

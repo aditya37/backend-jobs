@@ -12,7 +12,7 @@ import (
 )
 
 type EmployeAccount struct {
-	Id		 int	`gorm:"type:SMALLINT;primary_key" json:"idEmploye"`
+	Id		 int64	`gorm:"type:INTEGER;primary_key" json:"idEmploye"`
 	Username string `gorm:"type:VARCHAR(12);" json:"username"`
 	Password string `gorm:"type:CHAR(60);" json:"-"`
 	Email 	 string `gorm:"type:VARCHAR(60);" json:"email"`
