@@ -8,20 +8,25 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"log"
 	"os"
+	"time"
 
-	network "github.com/aditya37/backend-jobs/api/Model/Network"
+	model "github.com/aditya37/backend-jobs/api/Model/Entity/Employe"
+	"github.com/segmentio/ksuid"
+
+	infra "github.com/aditya37/backend-jobs/api/Infrastructure"
 
 	repository "github.com/aditya37/backend-jobs/api/Repository/Employe"
+	service "github.com/aditya37/backend-jobs/api/Service/Employe"
+
 	"github.com/joho/godotenv"
 )
 
 var (
-	connection network.DatabaseConnection = network.NewDatabaseConnection()
-	
+	connection infra.DatabaseConnection = infra.NewDatabaseConnection()
+	redisConn infra.IRedisConn = infra.NewRedisConn("localhost:6379","",0,10)
 )
 
 func main() {
@@ -29,22 +34,49 @@ func main() {
 	if env != nil {
 		log.Panic("Error .env file not found")
 	}
+
 	dbConn,err := connection.DatabaseConn(os.Getenv("DBHOST"),os.Getenv("DBPORT"),os.Getenv("DBUSER"),os.Getenv("DBPASSWORD"),os.Getenv("DBNAME"))
 	if err != nil {
 		fmt.Println("Database connection error ",err)
 	}
 	connection.DatabaseMigrate()
-	repo := repository.NewEmployeImpl(dbConn)
-	x := repo.GetEmployeById(2)
-
-	for _,hasil := range x {
-		jsonValue, _ := json.MarshalIndent(hasil,""," ")
-		fmt.Printf(string(jsonValue))
-	}
-	// jsonValue, _ := json.MarshalIndent(x,""," ")
-	// fmt.Printf(string(jsonValue))
+	EmployeRepo := repository.NewEmployeImpl(dbConn)
+	Empl := service.NewEmployeService(EmployeRepo)
 	
-	// service := service.NewRegionService(repo)
+	account := &model.EmployeAccount{
+		Username: "arifnyik",
+		Password: "lymousin",
+		Email: "aditya.krohman@gmail.com",
+		PhotoProfile: "google.com",
+		DateCreate: time.Now(),
+		DateUpdate: time.Now(),
+	}
+	
+	DoRegister,err := Empl.RegisterEmploye(account)
+	if err != nil {
+		log.Println(err.Error())
+	}
+	id := ksuid.New()
+	err = redisConn.AddEmailVerify(DoRegister.Email,id.String())
+	if err != nil {
+		log.Println(err)
+	}
+	Empl.SendEmailVerify(DoRegister.Email,DoRegister.Username,id.String())
+	redisKey,err := redisConn.VerifyEmail(DoRegister.Email)
+	if err != nil {
+		log.Println(err)
+	}
+	if len(redisKey) == 0 {
+		fmt.Println("Cache Not Found",redisKey)
+	}else{
+		if redisKey == id.String() {
+			EmployeRepo.EmployeEmailVerify(DoRegister.Email)
+		}
+	}
 
-	// fmt.Println(service.GetCountry())
+	// DoLogin,err := Empl.EmployeLogin("aditya","lymousin")
+	// if err != nil {
+	// 	log.Println(err.Error())
+	// }
+	// fmt.Println(DoLogin)
 }
