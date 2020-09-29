@@ -78,19 +78,27 @@ func (e *EmployeImpl) EmployeLogin(username,password string) ([]model.EmployeAcc
 	return EmployeAccount,nil
 }
 
-func (e *EmployeImpl) EmployeEmailVerify(email string) error {
+func (e *EmployeImpl) RefreshEmailVerify(email string) []model.EmployeAccount {
+	var (
+		Result []model.EmployeAccount
+	)
+	e.Database.Model(&model.EmployeAccount{}).Select("*").Where("email=? AND is_active='False'",email).Find(&Result)
+	return Result
+}
+
+func (e *EmployeImpl) EmployeEmailVerify(employeId string) error {
 	
 	TempData := &model.EmployeAccount{}
-	if err = e.Database.Debug().Table("employe_accounts").Select("username,is_active").Where("email=?",email).Find(TempData).Error; err != nil {
+	if err = e.Database.Debug().Table("employe_accounts").Select("id,is_active='False'").Where("id=?",employeId).Find(TempData).Error; err != nil {
 		return err
 	}
 
 	// Check data, if token not valid or not registered
-	if TempData.Username == "" {
-		return errors.New("Data Not Found")
+	if TempData.Id == 0 {
+		return errors.New("Account Not Found")
 	}
 
-	err = e.Database.Table("employe_accounts").Where("email=?",email).Update("is_active","True").Error
+	err = e.Database.Table("employe_accounts").Where("id=?",employeId).Update("is_active","True").Error
 	if err != nil {
 		return err
 	}
@@ -174,7 +182,7 @@ func (e *EmployeImpl) AddEmployeEducation(employeEdu *model.EmployeEducation) *m
 
 func (e *EmployeImpl) GetEmployeById(employeId int) []model.EmployeAccount{
 	var result []model.EmployeAccount
-	e.Database.Model(&model.EmployeAccount{}).Preload(clause.Associations).Where("employe_accounts.id=?",employeId).Find(&result)
+	e.Database.Model(&model.EmployeAccount{}).Preload(clause.Associations).Where("employe_accounts.id=? AND is_active='True'",employeId).Find(&result)
 	return result
 }
 
