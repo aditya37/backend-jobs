@@ -24,6 +24,7 @@ type IEmployeService interface {
 	AddEmployeEducation(employeEdu *model.EmployeEducation) *model.EmployeEducation
 	DeleteAccount(employeId int) error
 	GetEmployeById(employeId int) []model.EmployeAccount
-	EmployeEmailVerify(email string) error
-	SendEmailVerify(to,employeUsername,employeToken string) error
+	EmployeEmailVerify(employeId string) error
+	SendEmailVerify(to,employeUsername,employeToken string,EncodedID int64) error
+	RefreshEmailVerify(email string) []model.EmployeAccount
 }

@@ -39,12 +39,8 @@ func (e *EmployeImplService) ValidateEmployeAccount(employeAccount *model.Employ
 		return err
 	}
 	
-	PasswordPattern,_ := regexp.Compile(`^[a-z0-9A-z\D]{8,60}$`)
-	if len(employeAccount.Password) <= 8 {
-		err := errors.New("Please use 8 character or more")
-		return err
-	}else if(PasswordPattern.MatchString(employeAccount.Password) != true ){
-		err := errors.New("Please use strong password, you can use combined number or symbols")
+	if len(employeAccount.Password) >= 8 {
+		err := errors.New("Please use 8 character password")
 		return err
 	}
 
@@ -71,6 +67,8 @@ func (e *EmployeImplService) ValidateEmployeData(employeData *model.EmployeData)
 func (e *EmployeImplService) RegisterEmploye(addEmploye *model.EmployeAccount) (*model.EmployeAccount,error) {
 	addEmploye.Id = time.Now().Unix()
 	addEmploye.RefreshToken = util.StringWithCharSet(20)
+	addEmploye.DateCreate = time.Now()
+	addEmploye.DateUpdate = time.Now()
 	return e.EmployeRepo.RegisterEmploye(addEmploye)
 }
 
@@ -110,11 +108,14 @@ func (e *EmployeImplService) GetEmployeById(employeId int) []model.EmployeAccoun
 	return e.EmployeRepo.GetEmployeById(employeId)
 }
 
-func (e *EmployeImplService) EmployeEmailVerify(email string) error {
-	return e.EmployeRepo.EmployeEmailVerify(email)
+func (e *EmployeImplService) EmployeEmailVerify(employeId string) error {
+	return e.EmployeRepo.EmployeEmailVerify(employeId)
 }
 
-func (e *EmployeImplService) SendEmailVerify(to,employeUsername,employeToken string) error {
+func (e *EmployeImplService) RefreshEmailVerify(email string) []model.EmployeAccount {
+	return e.EmployeRepo.RefreshEmailVerify(email)
+}
+func (e *EmployeImplService) SendEmailVerify(to,employeUsername,employeToken string,employeId int64) error {
 	
 	// Load env variable for email authentication
 	env := godotenv.Load()
@@ -133,9 +134,11 @@ func (e *EmployeImplService) SendEmailVerify(to,employeUsername,employeToken str
 	EmailTemplate.Execute(&body,struct {
 		EmployeToken string
 		EmployeUsername string
+		EmployeID int64
 	}{
 		EmployeToken: employeToken,
 		EmployeUsername: employeUsername,
+		EmployeID: employeId,
 	})
 
 	// Send email
