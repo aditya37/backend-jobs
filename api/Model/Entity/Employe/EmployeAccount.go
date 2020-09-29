@@ -21,9 +21,9 @@ type EmployeAccount struct {
 	IsActive 	 string `gorm:"CHAR(5);" json:"isActive"`
 	DateCreate time.Time `gorm:"default:CURRENT_TIMESTAMP;" json:"date_create"`
 	DateUpdate time.Time `gorm:"default:CURRENT_TIMESTAMP;" json:"date_update"`
-	EmployeExperience  []EmployeExperience `gorm:"foreignKey:EmployeId;constraint:OnUpdate:NO ACTION,OnDelete:CASCADE;NOT NULL;references:id;" json:"employe_experiences"`
-	EmployeAttachments EmployeAttachment  `gorm:"foreignKey:EmployeId;constraint:OnUpdate:NO ACTION,OnDelete:CASCADE;NOT NULL;references:id;"  json:"employe_attachments"`
-	EmployeAddress	   EmployeAddress	  `gorm:"foreignKey:EmployeId;constraint:OnUpdate:NO ACTION,OnDelete:CASCADE;NOT NULL;references:id;"  json:"employe_address"`
-	EmployeEducations  []EmployeEducation `gorm:"foreignKey:EmployeId;constraint:OnUpdate:NO ACTION,OnDelete:CASCADE;NOT NULL;references:id;"  json:"employe_educations"`
-	EmployeDatas 	   EmployeData		  `gorm:"foreignKey:EmployeId;constraint:OnUpdate:NO ACTION,OnDelete:CASCADE;NOT NULL;references:id;"  json:"employe_datas"`
+	EmployeExperience  *[]EmployeExperience `gorm:"foreignKey:EmployeId;constraint:OnUpdate:NO ACTION,OnDelete:CASCADE;NOT NULL;references:id;" json:"employe_experiences"`
+	EmployeAttachments *EmployeAttachment  `gorm:"foreignKey:EmployeId;constraint:OnUpdate:NO ACTION,OnDelete:CASCADE;NOT NULL;references:id;"  json:"employe_attachments"`
+	EmployeAddress	   *EmployeAddress	  `gorm:"foreignKey:EmployeId;constraint:OnUpdate:NO ACTION,OnDelete:CASCADE;NOT NULL;references:id;"  json:"employe_address"`
+	EmployeEducations  *[]EmployeEducation `gorm:"foreignKey:EmployeId;constraint:OnUpdate:NO ACTION,OnDelete:CASCADE;NOT NULL;references:id;"  json:"employe_educations"`
+	EmployeDatas 	   *EmployeData		  `gorm:"foreignKey:EmployeId;constraint:OnUpdate:NO ACTION,OnDelete:CASCADE;NOT NULL;references:id;"  json:"employe_datas"`
 }
