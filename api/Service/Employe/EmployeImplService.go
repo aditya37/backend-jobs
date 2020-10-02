@@ -39,7 +39,7 @@ func (e *EmployeImplService) ValidateEmployeAccount(employeAccount *model.Employ
 		return err
 	}
 	
-	if len(employeAccount.Password) >= 8 {
+	if len(employeAccount.Password) <= 8 {
 		err := errors.New("Please use 8 character password")
 		return err
 	}
@@ -73,7 +73,21 @@ func (e *EmployeImplService) RegisterEmploye(addEmploye *model.EmployeAccount) (
 }
 
 func (e *EmployeImplService) EmployeLogin(username,password string) ([]model.EmployeAccount,error) {
-	return e.EmployeRepo.EmployeLogin(username,password)
+	EmployeLogin,err := e.EmployeRepo.EmployeLogin(username,password)
+	if err != nil {
+		switch err.Error() {
+		case "crypto/bcrypt: hashedPassword is not the hash of the given password":
+			return nil,errors.New("Wrong password")
+		case "crypto/bcrypt: hashedSecret too short to be a bcrypted password":
+			return nil,errors.New("Encrypted password to short")
+		case "record not found":
+			return nil,errors.New("Wrong username")
+		default:
+			return nil,err
+		}
+	}
+	
+	return EmployeLogin,nil
 }
 
 func (e *EmployeImplService) AddEmployeData(employeData *model.EmployeData) (*model.EmployeData,error) {
