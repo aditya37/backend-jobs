@@ -119,7 +119,7 @@ var _ = Describe("EmployeRepository", func() {
 		if err != nil {
 			Skip(err.Error())
 		}
-		Expect(social.EmployeId).To(Equal(1))
+		Expect(social.EmployeId).To(Equal(int64(1)))
 	})
 
 	It("AddEmployeExperience",func() {
@@ -153,11 +153,11 @@ var _ = Describe("EmployeRepository", func() {
 	if len(GetEmployeById) <= 0 {
 		Skip("User belum lengkap")
 	}
-	Expect(GetEmployeById[0].Id).To(Equal(1))
+	Expect(GetEmployeById[0].Id).To(Equal(int64(1)))
 	})
 
 	It("DeleteEmployeAccountById",func() {
-		repo.DeleteAccount(1)
+		// repo.DeleteAccount(1)
 	})
 
 	AfterEach(func(){

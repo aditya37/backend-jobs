@@ -34,8 +34,8 @@ func HashPassword(password string) ([]byte,error){
 }
 
 // Function for decrypt password
-func VerifyPassword(password,hashedPassword string) error {
-	return bcrypt.CompareHashAndPassword([]byte(password), []byte(hashedPassword))
+func VerifyPassword(hashedPassword,password string) error {
+	return bcrypt.CompareHashAndPassword([]byte(hashedPassword),[]byte(password))
 }
 
 func (e *EmployeImpl) RegisterEmploye(addEmploye *model.EmployeAccount) (*model.EmployeAccount,error) {
