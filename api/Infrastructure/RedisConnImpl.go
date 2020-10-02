@@ -9,6 +9,7 @@ package infrastructure
 
 import (
 	"context"
+	"strconv"
 	"time"
 
 	"github.com/go-redis/redis/v8"
@@ -30,6 +31,7 @@ func NewRedisConn(host,password string, db int,exp time.Duration) IRedisConn {
 	}
 }
 
+
 func (r *RedisConnImpl) ConnectToRedis() *redis.Client {
 	return redis.NewClient(&redis.Options{
 		Addr : r.RedisHost,
@@ -48,14 +50,17 @@ func (r *RedisConnImpl) RedisPing() (string,error) {
 	return pong,err
 }
 
-func (r *RedisConnImpl) AddEmailVerify(email,token string) error {
+func (r *RedisConnImpl) AddEmailVerify(id int64,token string) error {
 	var (
 		cntx = context.Background()
 		err error
 	)
 
 	RedisClient := r.ConnectToRedis()
-	err = RedisClient.Set(cntx,email,token,r.Exp*time.Second).Err()
+	
+	// Convert Int64 to string
+	IdToString := strconv.FormatInt(id,10)
+	err = RedisClient.Set(cntx,IdToString,token,r.Exp*time.Second).Err()
 	if err != nil {
 		return err
 	}
@@ -74,4 +79,16 @@ func (r *RedisConnImpl) VerifyEmail(key string) (string,error) {
 		return "",err
 	}
 	return result,nil
+}
+func (r *RedisConnImpl) RemoveToken(key string) error {
+	var (
+		cntx = context.Background()
+		err error
+	)
+	RedisClient := r.ConnectToRedis()
+	err = RedisClient.Del(cntx,key).Err()
+	if err != nil {
+		return err
+	}
+	return nil
 }
