@@ -14,7 +14,7 @@ import (
 type EmployeAccount struct {
 	Id		 int64	`gorm:"type:INTEGER;primary_key" json:"idEmploye"`
 	Username string `gorm:"type:VARCHAR(12);" json:"username"`
-	Password string `gorm:"type:CHAR(60);" json:"-"`
+	Password string `gorm:"type:CHAR(60);" json:"password"`
 	Email 	 string `gorm:"type:VARCHAR(60);" json:"email"`
 	PhotoProfile string `gorm:"type:CHAR(100);" json:"photo_profile"`
 	RefreshToken string `gorm:"VARCHAR(20);" json:"refresh_token"`
