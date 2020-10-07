@@ -16,7 +16,7 @@ type EmployeAccount struct {
 	Username string `gorm:"type:VARCHAR(12);" json:"username"`
 	Password string `gorm:"type:CHAR(60);" json:"password"`
 	Email 	 string `gorm:"type:VARCHAR(60);" json:"email"`
-	PhotoProfile string `gorm:"type:CHAR(100);" json:"photo_profile"`
+	PhotoProfile string `gorm:"type:VARCHAR(255);" json:"photo_profile"`
 	RefreshToken string `gorm:"VARCHAR(20);" json:"refresh_token"`
 	IsActive 	 string `gorm:"CHAR(5);" json:"isActive"`
 	DateCreate time.Time `gorm:"default:CURRENT_TIMESTAMP;" json:"date_create"`
