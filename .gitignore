@@ -1,3 +1,6 @@
 .VSCodeCounter/
 .env
 regexschema.txt
+keystore.json
+.vscode/
+TODO
