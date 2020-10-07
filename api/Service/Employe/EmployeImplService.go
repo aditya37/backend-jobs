@@ -32,6 +32,7 @@ func NewEmployeService(EmployeRepo repository.IEmployeRepo) IEmployeService {
 	return &EmployeImplService{EmployeRepo: EmployeRepo}
 }
 
+// TODO: Add validate for username length
 func (e *EmployeImplService) ValidateEmployeAccount(employeAccount *model.EmployeAccount) error {
 	
 	if employeAccount == nil {
@@ -42,6 +43,10 @@ func (e *EmployeImplService) ValidateEmployeAccount(employeAccount *model.Employ
 	if len(employeAccount.Password) <= 8 {
 		err := errors.New("Please use 8 character password")
 		return err
+	}
+	
+	if len(employeAccount.Username) >= 12 {
+		return errors.New("Username too long")
 	}
 
 	EmailPattern,_ := regexp.Compile(`^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$`)
