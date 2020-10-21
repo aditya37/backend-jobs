@@ -62,7 +62,7 @@ var _ = Describe("EmployeRepository", func() {
 		EmployeData := &model.EmployeData{
 			FirstName: "Aditya Rahman",
 			LastName: "Rahman",
-			Birth: time.Now().AddDate(1998,05,9),
+			Birth: "1998-05-1",
 			BirthPlace: "Bojonegoro",
 			IsMale: "True",
 			Phone: 6282257152133,

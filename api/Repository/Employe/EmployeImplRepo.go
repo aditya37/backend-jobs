@@ -9,6 +9,7 @@ package repository
 
 import (
 	"errors"
+	"log"
 
 	model "github.com/aditya37/backend-jobs/api/Model/Entity/Employe"
 	"golang.org/x/crypto/bcrypt"
@@ -18,6 +19,11 @@ import (
 
 type EmployeImpl struct {
 	Database *gorm.DB
+}
+
+type QueryResult struct {
+	IsActive string
+	EmployeId int64
 }
 
 var (
@@ -107,18 +113,29 @@ func (e *EmployeImpl) EmployeEmailVerify(employeId string) error {
 }
 
 func (e *EmployeImpl) AddEmployeData(employeData *model.EmployeData) (*model.EmployeData,error){
-
-	TempData := &model.EmployeData{}
-	if err := e.Database.Table("employe_data").Select("employe_id").Where("employe_id=?",employeData.EmployeId).Find(TempData).Error; err != nil {
+	// Fixme : Buat verifikasi jika apakahh user sudah verifikasi
+	TempData := &QueryResult{}
+	
+	if err := e.Database.Debug().Table("employe_accounts").Select("employe_accounts.is_active,employe_data.employe_id,employe_data.birth").Joins("inner join employe_data on employe_accounts.id=employe_data.employe_id").Where("employe_id=?",employeData.EmployeId).Find(&TempData).Error; err != nil {
 		return nil,err
+	}
+	log.Println(TempData)
+	if TempData.IsActive == "False" {
+		return nil,errors.New("Account not verified")	
+	}
+
+	if TempData.EmployeId != 0 {
+		return nil,errors.New("Duplicate data")
 	}
 	
 	// Check data, if same data found 
-	if TempData.EmployeId != 0 {
-		return nil,errors.New("Duplicate Employe Data")
-	}
+	// if TempData.EmployeId != 0 {
+	// 	return nil,errors.New("Duplicate Employe Data")
+	// }
 
-	e.Database.Create(&employeData)
+	if err := e.Database.Create(&employeData).Error; err != nil {
+		return nil,err
+	}
 	return employeData,nil
 }
 

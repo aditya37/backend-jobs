@@ -8,10 +8,12 @@
 package infrastructure
 
 import (
+	"database/sql"
 	"fmt"
 
 	region "github.com/aditya37/backend-jobs/api/Model/Entity"
 	model "github.com/aditya37/backend-jobs/api/Model/Entity/Employe"
+	_ "github.com/lib/pq"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -28,8 +30,13 @@ func NewDatabaseConnection() DatabaseConnection {
 
 func (s *_databaseConnection) DatabaseConn(host,port,username,password,dbname string) (*gorm.DB,error){
 	var err error
+
 	URL := fmt.Sprintf("host=%s port=%s user=%s dbname=%s sslmode=disable password=%s", host, port, username, dbname, password)
-	s.Database,err = gorm.Open(postgres.Open(URL),&gorm.Config{
+	pqd,err:= sql.Open("postgres",URL)
+	if err != nil {
+		return nil,err
+	}
+	s.Database,err = gorm.Open(postgres.New(postgres.Config{Conn:pqd}),&gorm.Config{
 		DisableForeignKeyConstraintWhenMigrating: false,
 	})
 	if err != nil {

@@ -14,4 +14,8 @@ type IEmployeController interface {
 	GetEmployeById(c echo.Context) error
 	VerifyEmail(c echo.Context) error
 	RefreshEmailVerify(c echo.Context) error
+	AddEmployeData(c echo.Context) error
+	AddEmployeAddress(c echo.Context) error
+	AddEmployeAttachment(c echo.Context) error
+	TestValidate(c echo.Context) (err error)
 }

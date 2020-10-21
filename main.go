@@ -15,6 +15,7 @@ import (
 	infrastructure "github.com/aditya37/backend-jobs/api/Infrastructure"
 	repository "github.com/aditya37/backend-jobs/api/Repository/Employe"
 	service "github.com/aditya37/backend-jobs/api/Service/Employe"
+	"github.com/go-playground/validator/v10"
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
 )
@@ -37,11 +38,13 @@ func main() {
 		log.Panic(err)
 	}
 	database.DatabaseMigrate()
-
+	
 	EmployeRepo 	:= repository.NewEmployeImpl(ConnectDB)
 	EmployeService  := service.NewEmployeService(EmployeRepo)
 	EmployeController := controller.NewEmployeController(EmployeService,redisCache,firebase)
 	
+	
+	router.Post("test",EmployeController.TestValidate)
 	// Verify route
 	router.Get("/verify/employe/verifyEmail",EmployeController.VerifyEmail)
 	router.Post("/verify/employe/refreshEmailVerify",EmployeController.RefreshEmailVerify)
@@ -49,9 +52,13 @@ func main() {
 	// Subroute or group Route
 	EmployeRoutes := router.RouteGroup("employes")
 	EmployeRoutes.POST("/signup",EmployeController.RegisterEmploye)
-	EmployeRoutes.POST("/signin",EmployeController.LoginEmploye)
+	EmployeRoutes.POST("/",EmployeController.LoginEmploye)
 	EmployeRoutes.GET("/:id",EmployeController.GetEmployeById)
+	EmployeRoutes.POST("/:id/datas",EmployeController.AddEmployeData)
+	EmployeRoutes.POST("/:id/address",EmployeController.AddEmployeAddress)
+	EmployeRoutes.POST("/:id/attachments",EmployeController.AddEmployeAttachment)
 	
+	router.CustomValidator(validator.New())
 	router.ErrorHandler() // Middleware error handling
 	
 	router.RouterLogger() // Router Logging

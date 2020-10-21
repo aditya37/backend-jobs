@@ -15,9 +15,11 @@ import (
 	"net/smtp"
 	"os"
 	"regexp"
+	"strconv"
 	"time"
 
 	util "github.com/aditya37/backend-jobs/api/utils"
+	"github.com/lib/pq"
 
 	model "github.com/aditya37/backend-jobs/api/Model/Entity/Employe"
 	repository "github.com/aditya37/backend-jobs/api/Repository/Employe"
@@ -61,8 +63,13 @@ func (e *EmployeImplService) ValidateEmployeAccount(employeAccount *model.Employ
 
 func (e *EmployeImplService) ValidateEmployeData(employeData *model.EmployeData) error {
 	
+	if employeData == nil {
+		err := errors.New("Empty employe account")
+		return err
+	}
+
 	PhonePattern, _ := regexp.Compile(`^(^[1-9]|0)(\d{3,4}?){2}\d{3,4}$`)
-	if PhonePattern.MatchString(string(employeData.Phone)) != true {
+	if PhonePattern.MatchString(strconv.Itoa(employeData.Phone)) != true {
 		err := errors.New("Please use this format 62xxx without plus (+)")
 		return err
 	}
@@ -96,7 +103,21 @@ func (e *EmployeImplService) EmployeLogin(username,password string) ([]model.Emp
 }
 
 func (e *EmployeImplService) AddEmployeData(employeData *model.EmployeData) (*model.EmployeData,error) {
-	return e.EmployeRepo.AddEmployeData(employeData)
+	AddEmployeData,err := e.EmployeRepo.AddEmployeData(employeData)
+	if err != nil {
+		switch ErrDump := err.(type) {
+		case *pq.Error:
+			switch ErrDump.Code {
+			case "23503":
+				return nil,errors.New("ID Unknown")
+			default:
+				return nil,errors.New("Unknown Error")
+			}
+		default:
+			return nil,err
+		}
+	}
+	return AddEmployeData,nil
 }
 
 func (e *EmployeImplService) AddEmployeAddress(employeAddr *model.EmployeAddress) (*model.EmployeAddress,error) {

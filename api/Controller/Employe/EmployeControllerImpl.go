@@ -65,7 +65,7 @@ func (e *EmployeControllerImpl) RegisterEmploye(c echo.Context) error {
 	}
 	err = e.EmployeService.ValidateEmployeAccount(&ValidatingRequest)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError,response.SuccessResponse{
+		return c.JSON(http.StatusBadRequest,response.SuccessResponse{
 			Status: 0,
 			Message: err.Error(),
 		})
@@ -81,7 +81,8 @@ func (e *EmployeControllerImpl) RegisterEmploye(c echo.Context) error {
 	
 	// Validate type file
 	TypeFile,_ := util.GetContentType(source)
-	if TypeFile != "image/jpeg" || TypeFile != "image/png" {
+	log.Println(TypeFile)
+	if TypeFile != "image/png" && TypeFile != "image/jpeg" {
 		return c.JSON(http.StatusUnsupportedMediaType,response.SuccessResponse{
 			Status: 0,
 			Message: "File format not supported",
@@ -97,7 +98,10 @@ func (e *EmployeControllerImpl) RegisterEmploye(c echo.Context) error {
 	// Upload to firebase
 	UrlPhoto,err := e.FirebaseStorage.UploadPhotoProfile(username,CreateTemp.Name())
 	if err != nil {
-		return c.JSON(http.StatusCreated,err.Error())
+		return c.JSON(http.StatusInternalServerError,response.SuccessResponse{
+			Status: 0,
+			Message: err.Error(),
+		})
 	}
 	os.Remove(CreateTemp.Name()) //cleaning up by removing the file
 
@@ -109,7 +113,7 @@ func (e *EmployeControllerImpl) RegisterEmploye(c echo.Context) error {
 		PhotoProfile: UrlPhoto,
 	})
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError,response.SuccessResponse{
+		return c.JSON(http.StatusUnprocessableEntity,response.SuccessResponse{
 			Status: 0,
 			Message: err.Error(),
 		})
@@ -274,4 +278,209 @@ func (e *EmployeControllerImpl) RefreshEmailVerify(c echo.Context) error {
 		Status: 1,
 		Message: "Refresh email verify success",
 	})
+}
+
+func (e *EmployeControllerImpl) AddEmployeData(c echo.Context) error {
+
+	var (
+		EmployeData *model.EmployeData
+	)
+
+	EmployeId,_:= strconv.Atoi(c.Param("id"))
+
+	// Decode request
+	err := json.NewDecoder(c.Request().Body).Decode(&EmployeData)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest,response.SuccessResponse{
+			Status:0,
+			Message:err.Error(),
+		})
+	}
+	
+	// Validate user input
+	err = e.EmployeService.ValidateEmployeData(EmployeData)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest,response.SuccessResponse{
+			Status: 0,
+			Message: err.Error(),
+		})
+	}
+	
+	DumpData := model.EmployeData{
+		FirstName: EmployeData.FirstName,
+		LastName: EmployeData.LastName,
+		Birth: EmployeData.Birth, // FIXME: Atur Format untuk parsing time
+		BirthPlace: EmployeData.BirthPlace,
+		IsMale: EmployeData.IsMale,
+		Phone: EmployeData.Phone,
+		About: EmployeData.About,
+		EmployeId:int64(EmployeId),
+	}
+
+	_,err = e.EmployeService.AddEmployeData(&DumpData)
+	if err != nil {
+		return c.JSON(http.StatusUnprocessableEntity,response.SuccessResponse{
+			Status:0,
+			Message:err.Error(),
+		})
+	}
+	
+	return c.JSON(http.StatusCreated,response.SuccessResponse{
+		Status:1,
+		Message:"Success save data",
+	})
+}
+
+func (e *EmployeControllerImpl) AddEmployeAddress(c echo.Context) error {
+	
+	var (
+		EmployeAddress *model.EmployeAddress
+	)
+
+	EmployeId,_ := strconv.Atoi(c.Param("id"))
+
+	// Decode request
+	err := json.NewDecoder(c.Request().Body).Decode(&EmployeAddress)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest,response.SuccessResponse{
+			Status: 0,
+			Message: err.Error(),
+		})
+	}
+	
+	// Dump Data from request
+	AddressData := model.EmployeAddress{
+		CountryName: EmployeAddress.CountryName,
+		ProvinceName: EmployeAddress.ProvinceName,
+		DistrictName: EmployeAddress.DistrictName,
+		Address_1: EmployeAddress.Address_1,
+		Address_2: EmployeAddress.Address_2,
+		PostalCode: EmployeAddress.PostalCode,
+		EmployeId: int64(EmployeId),
+	}
+
+	_,err = e.EmployeService.AddEmployeAddress(&AddressData)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest,response.SuccessResponse{
+			Status:0,
+			Message:err.Error(),
+		})
+	}
+	
+	return c.JSON(http.StatusAccepted,response.SuccessResponse{
+		Status: 1,
+		Message: "Success Add Address",
+	})
+}
+// FIXME: Buat Menjadi pisah, tidak bisa di buat multiple ex: Portofolio upload
+func (e *EmployeControllerImpl) AddEmployeAttachment(c echo.Context) error  {
+	
+	EmployeId,_:= strconv.Atoi(c.Param("id"))
+	
+	// Portofolio 
+	Portofolio,handler,err := c.Request().FormFile("portofolio_file")
+	if err != nil {
+		return c.JSON(http.StatusBadRequest,response.SuccessResponse{
+			Status:0,
+			Message:err.Error(),
+		})
+	}
+
+	PortofolioSource,err := handler.Open()
+	if err != nil {
+		return err
+	}
+	defer PortofolioSource.Close()
+	
+	// Validate type file
+	PortofolioTypeFile,_ := util.GetContentType(PortofolioSource)
+	if PortofolioTypeFile != "application/pdf" && PortofolioTypeFile != "application/msword" {
+		return c.JSON(http.StatusUnsupportedMediaType,response.SuccessResponse{
+			Status: 0,
+			Message: "File format not supported",
+		})
+	}
+
+	// Portofilio Temp
+	PortofolioTemp,err := util.CreateTemporyFile(os.TempDir(),"employe-portofolio",Portofolio)
+	if err != nil {
+		return err
+	}
+	
+	// Upload to Cloud Storage
+	PortofolioURL,PortofolioObject,err := e.FirebaseStorage.UploadPortofolio(strconv.Itoa(EmployeId),PortofolioTemp.Name())
+	if err != nil {
+		return c.JSON(http.StatusBadRequest,response.SuccessResponse{
+			Status:0,
+			Message:"Failed to upload Portofolio",
+		})
+	}
+	os.Remove(PortofolioTemp.Name())
+
+	// Resume 
+	Resume,ResumeHandler,err := c.Request().FormFile("resume_file")
+	if err != nil {
+		return c.JSON(http.StatusBadRequest,response.SuccessResponse{
+			Status:0,
+			Message:err.Error(),
+		})
+	}
+
+	ResumeSource,err := ResumeHandler.Open()
+	if err != nil {
+		return err
+	}
+	defer ResumeSource.Close()
+	
+	// Validate type file
+	ResumeTypeFile,_ := util.GetContentType(ResumeSource)
+	if ResumeTypeFile != "application/pdf" && ResumeTypeFile != "application/msword" {
+		return c.JSON(http.StatusUnsupportedMediaType,response.SuccessResponse{
+			Status: 0,
+			Message: "File format not supported",
+		})
+	}
+
+	// Portofilio Temp
+	ResumeTemp,err := util.CreateTemporyFile(os.TempDir(),"employe-resume",Resume)
+	if err != nil {
+		return err
+	}
+	
+	// Upload to Cloud storage
+	ResumeURL,ResumeName,err := e.FirebaseStorage.UploadResume(strconv.Itoa(EmployeId),ResumeTemp.Name())
+	if err != nil {
+		return c.JSON(http.StatusBadRequest,response.SuccessResponse{
+			Status:0,
+			Message:"Failed To Upload Resume",
+		})
+	}
+	os.Remove(ResumeTemp.Name())
+	
+	// Dump Data
+	data := &model.EmployeAttachment{
+		PortofolioFile: PortofolioURL,
+		ResumeFile:ResumeURL,
+		ResumeObject: ResumeName,
+		PortofolioObject: PortofolioObject,
+		EmployeId: int64(EmployeId),
+	}
+	
+	// Save to database
+	_,err = e.EmployeService.AddEmployeAttachment(data)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest,response.SuccessResponse{
+			Status:0,
+			Message:err.Error(),
+		})
+	}
+
+	return c.JSON(http.StatusAccepted,response.SuccessResponse{
+		Status: 1,
+		Message: "Success Add Attachments",
+	})
+}
+
+func (e *EmployeControllerImpl) TestValidate(c echo.Context) (err error) {
+	return
 }

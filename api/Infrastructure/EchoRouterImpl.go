@@ -12,6 +12,9 @@ import (
 	"net/http"
 	"os"
 
+	util "github.com/aditya37/backend-jobs/api/utils"
+	"github.com/go-playground/validator/v10"
+
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
@@ -47,7 +50,7 @@ func (e *EchoRouterImpl) RouteGroup(uri string) *echo.Group {
 	return e.EchoDispatcher.Group(uri,middleware.JWTWithConfig(middleware.JWTConfig{
 		Skipper: func(c echo.Context) bool {
 			switch c.Request().RequestURI {
-			case "/employes/signin":
+			case "/employes/":
 				return true
 			case "/employes/signup":
 				return true
@@ -81,5 +84,11 @@ func (e *EchoRouterImpl) ErrorHandler() {
 				"Message":e.Error(),
 			})
 		}
+	}
+}
+// FIXME: Buat menjadi dependency injection
+func (e *EchoRouterImpl) CustomValidator(v *validator.Validate){
+	e.EchoDispatcher.Validator = &util.CustomValidator{
+		Validator: v,
 	}
 }
