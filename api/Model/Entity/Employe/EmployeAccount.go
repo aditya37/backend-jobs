@@ -12,18 +12,19 @@ import (
 )
 
 type EmployeAccount struct {
-	Id		 int64	`gorm:"type:INTEGER;primary_key" json:"idEmploye"`
-	Username string `gorm:"type:VARCHAR(12);" json:"username"`
-	Password string `gorm:"type:CHAR(60);" json:"password"`
-	Email 	 string `gorm:"type:VARCHAR(60);" json:"email"`
-	PhotoProfile string `gorm:"type:VARCHAR(255);" json:"photo_profile"`
-	RefreshToken string `gorm:"VARCHAR(20);" json:"refresh_token"`
-	IsActive 	 string `gorm:"CHAR(5);" json:"isActive"`
-	DateCreate time.Time `gorm:"default:CURRENT_TIMESTAMP;" json:"date_create"`
-	DateUpdate time.Time `gorm:"default:CURRENT_TIMESTAMP;" json:"date_update"`
-	EmployeExperience  *[]EmployeExperience `gorm:"foreignKey:EmployeId;constraint:OnUpdate:NO ACTION,OnDelete:CASCADE;NOT NULL;references:id;" json:"employe_experiences"`
-	EmployeAttachments *EmployeAttachment  `gorm:"foreignKey:EmployeId;constraint:OnUpdate:NO ACTION,OnDelete:CASCADE;NOT NULL;references:id;"  json:"employe_attachments"`
-	EmployeAddress	   *EmployeAddress	  `gorm:"foreignKey:EmployeId;constraint:OnUpdate:NO ACTION,OnDelete:CASCADE;NOT NULL;references:id;"  json:"employe_address"`
-	EmployeEducations  *[]EmployeEducation `gorm:"foreignKey:EmployeId;constraint:OnUpdate:NO ACTION,OnDelete:CASCADE;NOT NULL;references:id;"  json:"employe_educations"`
-	EmployeDatas 	   *EmployeData		  `gorm:"foreignKey:EmployeId;constraint:OnUpdate:NO ACTION,OnDelete:CASCADE;NOT NULL;references:id;"  json:"employe_datas"`
+	Id		 int64	`db:"id" json:"idEmploye"`
+	Username string `db:"username" json:"username"`
+	Password string `db:"password" json:"password,omitempty"`
+	Email 	 string `db:"email" json:"email"`
+	PhotoProfile string `db:"photo_profile" json:"photo_profile"`
+	RefreshToken string `db:"refresh_token" json:"refresh_token"`
+	IsActive 	 string `db:"is_active" json:"is_active"`
+	DateCreate 	 time.Time `db:"date_create" json:"date_create"`
+	DateUpdate 	 time.Time `db:"date_update" json:"date_update"`
+	EmployeData 	  *EmployeData `json:"employe_datas"`
+	EmployeEducation  *[]EmployeEducation `json:"employe_educations"`
+	EmployeExperience *[]EmployeExperience `json:"employe_experiences"`
+	EmployeAddress 	  *EmployeAddress `json:"employe_addresses"`
+	EmployeAttachment *EmployeAttachment `json:"employe_attachments"`
+	EmployeSocial 	  *EmployeSocial `json:"employe_socials"`
 }

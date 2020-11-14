@@ -6,15 +6,11 @@
  */
 
 package model
-
-import "time"
-
 type EmployeEducation struct {
-	InstitutionName	string `gorm:"type:VARCHAR(20);" json:"institution_name"`
-	Degree			string `gorm:"type:VARCHAR(20);" json:"degree"`
-	Certificate		string `gorm:"type:CHAR(20);" 	 json:"certificate_link"`
-	IsActive 		string `gorm:"type:CHAR(5);" json:"IsActive"`
-	StartEducation 	time.Time `gorm:"type:DATE;" json:"start_education"`
-	EndEducation 	time.Time `gorm:"type:DATE;" json:"end_education"`
-	EmployeId 		int64 `gorm:"type:INTEGER;NOT NULL;" json:"-"`
+	InstitutionName	string `db:"institution_name" json:"institution_name,omitempty"`
+	Degree			string `db:"degree" json:"degree,omitempty"`
+	IsActive 		string `db:"is_active" json:"IsActive,omitempty"`
+	StartEducation 	string `db:"start_education" json:"start_education,omitempty"`
+	EndEducation 	string `db:"end_education" json:"end_education,omitempty"`
+	EmployeId 		int64  `db:"employe_id" json:"-"`
 }

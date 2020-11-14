@@ -8,10 +8,10 @@
 package infrastructure
 
 import (
-	"gorm.io/gorm"
+	"github.com/jmoiron/sqlx"
 )
 
 type DatabaseConnection interface {
-	DatabaseConn(host,port,username,password,dbname string) (*gorm.DB,error)
-	DatabaseMigrate()
+	DatabaseConn(host,port,username,password,dbname string) (*sqlx.DB,error)
+	// DatabaseMigrate()
 } 

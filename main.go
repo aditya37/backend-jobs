@@ -15,7 +15,6 @@ import (
 	infrastructure "github.com/aditya37/backend-jobs/api/Infrastructure"
 	repository "github.com/aditya37/backend-jobs/api/Repository/Employe"
 	service "github.com/aditya37/backend-jobs/api/Service/Employe"
-	"github.com/go-playground/validator/v10"
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
 )
@@ -28,6 +27,7 @@ var (
 )
 
 func main() {
+
 	LoadEnv := godotenv.Load()
 	if LoadEnv != nil {
 		log.Fatalln(LoadEnv)
@@ -37,14 +37,16 @@ func main() {
 	if err != nil {
 		log.Panic(err)
 	}
-	database.DatabaseMigrate()
 	
-	EmployeRepo 	:= repository.NewEmployeImpl(ConnectDB)
-	EmployeService  := service.NewEmployeService(EmployeRepo)
+	// database.DatabaseMigrate()
+	
+	EmployeRepo 	  := repository.NewEmployeImpl(ConnectDB)
+	EmployeService    := service.NewEmployeService(EmployeRepo)
 	EmployeController := controller.NewEmployeController(EmployeService,redisCache,firebase)
 	
 	
 	router.Post("test",EmployeController.TestValidate)
+
 	// Verify route
 	router.Get("/verify/employe/verifyEmail",EmployeController.VerifyEmail)
 	router.Post("/verify/employe/refreshEmailVerify",EmployeController.RefreshEmailVerify)
@@ -57,10 +59,13 @@ func main() {
 	EmployeRoutes.POST("/:id/datas",EmployeController.AddEmployeData)
 	EmployeRoutes.POST("/:id/address",EmployeController.AddEmployeAddress)
 	EmployeRoutes.POST("/:id/attachments",EmployeController.AddEmployeAttachment)
+	EmployeRoutes.POST("/:id/educations",EmployeController.AddEmployeEducation)
+	EmployeRoutes.POST("/:id/experiences",EmployeController.AddEmployeExperience)
+	EmployeRoutes.POST("/:id/socials",EmployeController.AddEmployeSocial)
 	
-	router.CustomValidator(validator.New())
 	router.ErrorHandler() // Middleware error handling
 	
 	router.RouterLogger() // Router Logging
 	router.StartServer(":3000") // Start server
+	
 }

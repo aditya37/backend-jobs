@@ -17,5 +17,8 @@ type IEmployeController interface {
 	AddEmployeData(c echo.Context) error
 	AddEmployeAddress(c echo.Context) error
 	AddEmployeAttachment(c echo.Context) error
+	AddEmployeEducation(c echo.Context) error
+	AddEmployeExperience(c echo.Context) error
+	AddEmployeSocial(c echo.Context) error
 	TestValidate(c echo.Context) (err error)
 }

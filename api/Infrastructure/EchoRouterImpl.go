@@ -12,9 +12,6 @@ import (
 	"net/http"
 	"os"
 
-	util "github.com/aditya37/backend-jobs/api/utils"
-	"github.com/go-playground/validator/v10"
-
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
@@ -68,27 +65,32 @@ func (e *EchoRouterImpl) RouteGroup(uri string) *echo.Group {
 func (e *EchoRouterImpl) ErrorHandler() {
 	e.EchoDispatcher.HTTPErrorHandler = func(e error, c echo.Context) {
 		log.Println(e.Error())
-		if http.StatusBadRequest == 400 {
-			c.JSON(http.StatusBadRequest,echo.Map{
-				"Status":0,
-				"Message":"Bad Request",
-			})
-		}else if(http.StatusUnauthorized == 401){
-			c.JSON(http.StatusUnauthorized,echo.Map{
-				"Status":0,
-				"Message":"Unauthorized",
-			})
-		}else{
-			c.JSON(http.StatusBadGateway,echo.Map{
-				"Status":0,
-				"Message":e.Error(),
-			})
+		switch httpErrors := e.(type) {
+		case *echo.HTTPError:
+			switch httpErrors.Code {
+			case 401:
+				c.JSON(http.StatusUnauthorized,echo.Map{
+					"Status":0,
+					"Message":httpErrors.Message,
+				})
+			case 400:
+				c.JSON(http.StatusBadRequest,echo.Map{
+					"Status":0,
+					"Message":httpErrors.Message,
+				})
+			case 404:
+				c.JSON(http.StatusNotFound,echo.Map{
+					"Status":0,
+					"Message":httpErrors.Message,
+				})
+			default:
+				c.JSON(http.StatusBadGateway,echo.Map{
+					"Status":0,
+					"Message":httpErrors.Message,
+				})
+			}
+		default:
+			break
 		}
-	}
-}
-// FIXME: Buat menjadi dependency injection
-func (e *EchoRouterImpl) CustomValidator(v *validator.Validate){
-	e.EchoDispatcher.Validator = &util.CustomValidator{
-		Validator: v,
 	}
 }

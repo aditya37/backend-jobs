@@ -8,19 +8,14 @@
 package infrastructure
 
 import (
-	"database/sql"
 	"fmt"
 
-	region "github.com/aditya37/backend-jobs/api/Model/Entity"
-	model "github.com/aditya37/backend-jobs/api/Model/Entity/Employe"
+	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
-
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
 )
 
 type _databaseConnection struct {
-	Database *gorm.DB
+	Database *sqlx.DB
 }
 
 func NewDatabaseConnection() DatabaseConnection {
@@ -28,24 +23,19 @@ func NewDatabaseConnection() DatabaseConnection {
 	
 }
 
-func (s *_databaseConnection) DatabaseConn(host,port,username,password,dbname string) (*gorm.DB,error){
+func (s *_databaseConnection) DatabaseConn(host,port,username,password,dbname string) (*sqlx.DB,error){
 	var err error
 
 	URL := fmt.Sprintf("host=%s port=%s user=%s dbname=%s sslmode=disable password=%s", host, port, username, dbname, password)
-	pqd,err:= sql.Open("postgres",URL)
+	s.Database,err = sqlx.Connect("postgres",URL)
 	if err != nil {
 		return nil,err
 	}
-	s.Database,err = gorm.Open(postgres.New(postgres.Config{Conn:pqd}),&gorm.Config{
-		DisableForeignKeyConstraintWhenMigrating: false,
-	})
-	if err != nil {
-		return nil,err
-	}	
-	return s.Database,err
+	
+	return s.Database,nil
 }
 
-func (s *_databaseConnection) DatabaseMigrate() {
-	// s.Database.Migrator().DropTable(&model.EmployeAccount{},&model.EmployeAddress{},&model.EmployeAttachment{},&model.EmployeData{},&model.EmployeExperience{},&model.EmployeSocial{},&model.EmployeEducation{},&region.Country{},&region.District{},&region.Province{})
-	s.Database.AutoMigrate(&model.EmployeAccount{},&model.EmployeAddress{},&model.EmployeAttachment{},&model.EmployeData{},&model.EmployeExperience{},&model.EmployeSocial{},&model.EmployeEducation{},&region.Country{},&region.District{},&region.Province{})
-}
+// func (s *_databaseConnection) DatabaseMigrate() {
+// 	// s.Database.Migrator().DropTable(&model.EmployeAccount{},&model.EmployeAddress{},&model.EmployeAttachment{},&model.EmployeData{},&model.EmployeExperience{},&model.EmployeSocial{},&model.EmployeEducation{},&region.Country{},&region.District{},&region.Province{})
+// 	s.Database.AutoMigrate(&model.EmployeAccount{},&model.EmployeAddress{},&model.EmployeAttachment{},&model.EmployeData{},&model.EmployeExperience{},&model.EmployeSocial{},&model.EmployeEducation{},&region.Country{},&region.District{},&region.Province{})
+// }

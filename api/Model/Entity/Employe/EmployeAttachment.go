@@ -8,9 +8,9 @@
 package model
 
 type EmployeAttachment struct {
-	PortofolioFile string `gorm:"type:VARCHAR(255);" json:"portofolio_file"`
-	ResumeFile 	   string `gorm:"type:VARCHAR(255);" json:"resume_file"`
-	ResumeObject   string `gorm:"type:VARCHAR(50);"  json:"resume_object"`
-	PortofolioObject string `gorm:"type:VARCHAR(50);"  json:"portofolio_object"`
-	EmployeId	   int64  `gorm:"type:INTEGER;"json:"-"`
+	PortofolioFile string `db:"portofolio_file" json:"portofolio_file"`
+	ResumeFile 	   string `db:"resume_file" json:"resume_file"`
+	ResumeObject   string `db:"resume_object"  json:"resume_object,omitempty"`
+	PortofolioObject string `db:"portofolio_object" json:"portofolio_object,omitempty"`
+	EmployeId	   int64  `db:"employe_id" json:"-"`
 }

@@ -149,12 +149,18 @@ func (e *EmployeControllerImpl) RegisterEmploye(c echo.Context) error {
 func (e *EmployeControllerImpl) GetEmployeById(c echo.Context) error {
 	
 	EmployeId,_:= strconv.Atoi(c.Param("id"))
-	GetEmploye := e.EmployeService.GetEmployeById(EmployeId)
-
-	if len(GetEmploye) <= 0 {
+	GetEmploye,err := e.EmployeService.GetEmployeById(EmployeId)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest,response.SuccessResponse{
+			Status:0,
+			Message:err.Error(),
+		})
+	}
+	
+	if len(GetEmploye) < 1 {
 		return c.JSON(http.StatusNotFound,response.SuccessResponse{
-			Status:1,
-			Message:"Data not found",
+			Status:0,
+			Message:"Empty Data",
 		})
 	}
 	return c.JSON(http.StatusAccepted,response.SuccessResponse{
@@ -248,6 +254,7 @@ func (e *EmployeControllerImpl) RefreshEmailVerify(c echo.Context) error {
 	EmailParam := c.FormValue("email")
 	
 	hasil := e.EmployeService.RefreshEmailVerify(EmailParam)
+	log.Println(hasil)
 	if len(hasil) <= 0 {
 		return c.JSON(http.StatusNotFound,response.SuccessResponse{
 			Status: 0,
@@ -305,7 +312,7 @@ func (e *EmployeControllerImpl) AddEmployeData(c echo.Context) error {
 			Message: err.Error(),
 		})
 	}
-	
+
 	DumpData := model.EmployeData{
 		FirstName: EmployeData.FirstName,
 		LastName: EmployeData.LastName,
@@ -358,7 +365,6 @@ func (e *EmployeControllerImpl) AddEmployeAddress(c echo.Context) error {
 		PostalCode: EmployeAddress.PostalCode,
 		EmployeId: int64(EmployeId),
 	}
-
 	_,err = e.EmployeService.AddEmployeAddress(&AddressData)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest,response.SuccessResponse{
@@ -437,7 +443,7 @@ func (e *EmployeControllerImpl) AddEmployeAttachment(c echo.Context) error  {
 	if ResumeTypeFile != "application/pdf" && ResumeTypeFile != "application/msword" {
 		return c.JSON(http.StatusUnsupportedMediaType,response.SuccessResponse{
 			Status: 0,
-			Message: "File format not supported",
+			Message: "Resume File,format not supported",
 		})
 	}
 
@@ -459,7 +465,7 @@ func (e *EmployeControllerImpl) AddEmployeAttachment(c echo.Context) error  {
 	
 	// Dump Data
 	data := &model.EmployeAttachment{
-		PortofolioFile: PortofolioURL,
+		PortofolioFile:PortofolioURL,
 		ResumeFile:ResumeURL,
 		ResumeObject: ResumeName,
 		PortofolioObject: PortofolioObject,
@@ -483,4 +489,122 @@ func (e *EmployeControllerImpl) AddEmployeAttachment(c echo.Context) error  {
 
 func (e *EmployeControllerImpl) TestValidate(c echo.Context) (err error) {
 	return
+}
+func (e *EmployeControllerImpl) AddEmployeEducation(c echo.Context) error {
+	
+	var (
+		EmployeEducation *model.EmployeEducation
+	)
+
+	EmployeId,_ := strconv.Atoi(c.Param("id"))
+
+	err := json.NewDecoder(c.Request().Body).Decode(&EmployeEducation)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest,response.SuccessResponse{
+			Status: 0,
+			Message: err.Error(),
+		})
+	}
+
+	DumpData := model.EmployeEducation{
+		InstitutionName: EmployeEducation.InstitutionName,
+		Degree:          EmployeEducation.Degree,
+		IsActive:        EmployeEducation.IsActive,
+		StartEducation:  EmployeEducation.StartEducation,
+		EndEducation:    EmployeEducation.EndEducation,
+		EmployeId:       int64(EmployeId),
+	}
+
+	_,err = e.EmployeService.AddEmployeEducation(&DumpData)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest,response.SuccessResponse{
+			Status:0,
+			Message:err.Error(),
+		})
+	}
+
+	return c.JSON(http.StatusAccepted,response.SuccessResponse{
+		Status:1,
+		Message:"Success add your educations",
+	})
+}
+
+func (e *EmployeControllerImpl) AddEmployeExperience(c echo.Context) error {
+
+	var (
+		EmployeExperience *model.EmployeExperience
+	)
+	
+	EmployeId,_ := strconv.Atoi(c.Param("id"))
+
+	err := json.NewDecoder(c.Request().Body).Decode(&EmployeExperience)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest,response.SuccessResponse{
+			Status:0,
+			Message:err.Error(),
+		})
+	}
+
+	DumpData := model.EmployeExperience{
+		CompanyName: EmployeExperience.CompanyName,
+		JobTitle:    EmployeExperience.JobTitle,
+		JobDesc:     EmployeExperience.JobDesc,
+		IsActive:    EmployeExperience.IsActive,
+		StartWork:   EmployeExperience.StartWork,
+		EndWork:     EmployeExperience.EndWork,
+		EmployeId:   int64(EmployeId),
+	}
+	
+	_,err = e.EmployeService.AddEmployeExperience(&DumpData)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest,response.SuccessResponse{
+			Status: 0,
+			Message: err.Error(),
+		})
+	}
+
+	return c.JSON(http.StatusAccepted,response.SuccessResponse{
+		Status:1,
+		Message:"Success add your experience",
+	})
+}
+
+func (e *EmployeControllerImpl) AddEmployeSocial(c echo.Context) error {
+	
+	var (
+		EmployeSocial *model.EmployeSocial
+	)
+
+	EmployeId,_ := strconv.Atoi(c.Param("id"))
+
+	err := json.NewDecoder(c.Request().Body).Decode(&EmployeSocial)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest,response.SuccessResponse{
+			Status:0,
+			Message:err.Error(),
+		})
+	}
+
+	DumpData := model.EmployeSocial{
+		PortofolioLink: EmployeSocial.PortofolioLink,
+		GithubLink:     EmployeSocial.GithubLink,
+		LinkedinLink:   EmployeSocial.LinkedinLink,
+		BlogLink:       EmployeSocial.BlogLink,
+		TwitterLink:    EmployeSocial.TwitterLink,
+		EmployeId:      int64(EmployeId),
+	}
+
+	_,err = e.EmployeService.AddEmployeSocial(&DumpData)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest,response.SuccessResponse{
+			Status:0,
+			Message:err.Error(),
+		})
+	}
+
+	return c.JSON(http.StatusAccepted,response.SuccessResponse{
+		Status:1,
+		Message:"Success add your social media",
+	})
+
 }

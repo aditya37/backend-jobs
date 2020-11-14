@@ -7,16 +7,12 @@
 
 package model
 
-import (
-	"time"
-)
-
 type EmployeExperience struct {
-	CompanyName string `gorm:"type:VARCHAR(20);" json:"companyName"`
-	JobTitle 	string `gorm:"type:VARCHAR(20);" json:"jobTitle"`
-	JobDesc 	string `gorm:"type:VARCHAR(200);" json:"jobDesc"`
-	IsActive 	string `gorm:"type:CHAR(5);" json:"isActive"`
-	StartWork 	time.Time `gorm:"type:DATE" json:"startWork"`
-	EndWork 	time.Time `gorm:"type:DATE;" json:"endWork"`
-	EmployeId 	int64 	  `gorm:"type:INTEGER;NOT NULL;" json:"-"`
+	CompanyName string `db:"company_name" json:"company_name,omitempty"`
+	JobTitle 	string `db:"job_title" json:"job_title,omitempty"`
+	JobDesc 	string `db:"job_desc" json:"job_desc,omitempty"`
+	IsActive 	string `db:"is_active" json:"is_active,omitempty"`
+	StartWork 	string `db:"start_work" json:"start_work,omitempty"`
+	EndWork 	string `db:"end_work" json:"end_work,omitempty"`
+	EmployeId 	int64  `db:"employe_id" json:"-"`
 }
