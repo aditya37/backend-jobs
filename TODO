@@ -1,0 +1,29 @@
+Employe:
+  Controller:
+    ✔ Fixme: Ubah request dari json ke multipart form untuk handle file upload @file:///home/aditya/projects/backend/golang/backend-jobs/api/Controller/Employe/EmployeControllerImpl.go#33 @done(20-10-04 14:26)
+    ✔ FIXME: Buat function atau utils untuk membuat tempfile @done(20-10-04 14:26)
+    ✔ FIXME: Atur Format untuk parsing time @done(20-10-07 17:17)
+  Repository:
+  Model:
+  Service:
+    ✔ TODO: Add validate for username lengths @done(20-10-07 14:09)
+
+Company:
+  Controller:
+  Repository:
+  Model:
+  Service:
+
+Jobs:
+  Controller:
+  Repository:
+  Model:
+  Service:
+
+Infrastructure:
+  Routes (Echo):
+    ✔ TODO: declare middleware skipper @done(20-10-02 12:46) @file:///home/aditya/projects/backend/golang/backend-jobs/api/Infrastructure/EchoRouterImpl.go#50
+  Redis:
+  Postgresql:
+
+Notes:
