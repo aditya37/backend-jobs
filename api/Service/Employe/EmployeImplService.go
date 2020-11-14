@@ -18,11 +18,11 @@ import (
 	"strconv"
 	"time"
 
-	util "github.com/aditya37/backend-jobs/api/utils"
 	"github.com/lib/pq"
 
 	model "github.com/aditya37/backend-jobs/api/Model/Entity/Employe"
 	repository "github.com/aditya37/backend-jobs/api/Repository/Employe"
+	util "github.com/aditya37/backend-jobs/api/utils"
 	"github.com/joho/godotenv"
 )
 
@@ -73,14 +73,13 @@ func (e *EmployeImplService) ValidateEmployeData(employeData *model.EmployeData)
 		err := errors.New("Please use this format 62xxx without plus (+)")
 		return err
 	}
+
 	return nil
 }
 
 func (e *EmployeImplService) RegisterEmploye(addEmploye *model.EmployeAccount) (*model.EmployeAccount,error) {
 	addEmploye.Id = time.Now().Unix()
 	addEmploye.RefreshToken = util.StringWithCharSet(20)
-	addEmploye.DateCreate = time.Now()
-	addEmploye.DateUpdate = time.Now()
 	return e.EmployeRepo.RegisterEmploye(addEmploye)
 }
 
@@ -132,11 +131,11 @@ func (e *EmployeImplService) AddEmployeSocial(employeSocial *model.EmployeSocial
 	return e.EmployeRepo.AddEmployeSocial(employeSocial)
 }
 
-func (e *EmployeImplService) AddEmployeExperience(experience *model.EmployeExperience) *model.EmployeExperience {
+func (e *EmployeImplService) AddEmployeExperience(experience *model.EmployeExperience) (*model.EmployeExperience,error) {
 	return e.EmployeRepo.AddEmployeExperience(experience)
 }
 
-func (e *EmployeImplService) AddEmployeEducation(employeEdu *model.EmployeEducation) *model.EmployeEducation {
+func (e *EmployeImplService) AddEmployeEducation(employeEdu *model.EmployeEducation) (*model.EmployeEducation,error) {
 	return e.EmployeRepo.AddEmployeEducation(employeEdu)
 }
 
@@ -144,7 +143,7 @@ func (e *EmployeImplService) DeleteAccount(employeId int) error {
 	return e.EmployeRepo.DeleteAccount(employeId)
 }
 
-func (e *EmployeImplService) GetEmployeById(employeId int) []model.EmployeAccount {
+func (e *EmployeImplService) GetEmployeById(employeId int) ([]model.EmployeAccount,error) {
 	return e.EmployeRepo.GetEmployeById(employeId)
 }
 
