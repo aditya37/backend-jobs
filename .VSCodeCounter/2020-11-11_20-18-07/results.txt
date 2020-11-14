@@ -1,0 +1,84 @@
+Date : 2020-11-11 20:18:07
+Directory : /home/aditya/projects/backend/golang/backend-jobs
+Total : 42 files,  1883 codes, 283 comments, 410 blanks, all 2576 lines
+
+Languages
++----------+------------+------------+------------+------------+------------+
+| language | files      | code       | comment    | blank      | total      |
++----------+------------+------------+------------+------------+------------+
+| Go       |         39 |      1,774 |        283 |        382 |      2,439 |
+| Markdown |          1 |         45 |          0 |         21 |         66 |
+| HTML     |          1 |         36 |          0 |          3 |         39 |
+| XML      |          1 |         28 |          0 |          4 |         32 |
++----------+------------+------------+------------+------------+------------+
+
+Directories
++------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                                 | files      | code       | comment    | blank      | total      |
++------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                                    |         42 |      1,883 |        283 |        410 |      2,576 |
+| api                                                                                                  |         39 |      1,774 |        274 |        390 |      2,438 |
+| api/Controller                                                                                       |          2 |        398 |         45 |         71 |        514 |
+| api/Controller/Employe                                                                               |          2 |        398 |         45 |         71 |        514 |
+| api/Infrastructure                                                                                   |          8 |        348 |         58 |         76 |        482 |
+| api/Model                                                                                            |         12 |        111 |         66 |         28 |        205 |
+| api/Model/Entity                                                                                     |         11 |        105 |         60 |         26 |        191 |
+| api/Model/Entity/Employe                                                                             |          8 |         93 |         42 |         20 |        155 |
+| api/Repository                                                                                       |          8 |        591 |         59 |        120 |        770 |
+| api/Repository/Employe                                                                               |          4 |        454 |         23 |         86 |        563 |
+| api/Service                                                                                          |          4 |        207 |         28 |         52 |        287 |
+| api/Service/Employe                                                                                  |          2 |        166 |         16 |         38 |        220 |
+| api/auth                                                                                             |          1 |         18 |          6 |          6 |         30 |
+| api/utils                                                                                            |          3 |         56 |         12 |         16 |         84 |
+| assets                                                                                               |          1 |         36 |          0 |          3 |         39 |
+| assets/pages                                                                                         |          1 |         36 |          0 |          3 |         39 |
++------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++------------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+
+| filename                                                                                             | language | code       | comment    | blank      | total      |
++------------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+
+| /home/aditya/projects/backend/golang/backend-jobs/api/Controller/Employe/EmployeControllerImpl.go    | Go       |        385 |         39 |         69 |        493 |
+| /home/aditya/projects/backend/golang/backend-jobs/api/Controller/Employe/IEmployeController.go       | Go       |         13 |          6 |          2 |         21 |
+| /home/aditya/projects/backend/golang/backend-jobs/api/Infrastructure/DatabaseConnImplNetwork.go      | Go       |         21 |         10 |         11 |         42 |
+| /home/aditya/projects/backend/golang/backend-jobs/api/Infrastructure/EchoRouterImpl.go               | Go       |         84 |          9 |         12 |        105 |
+| /home/aditya/projects/backend/golang/backend-jobs/api/Infrastructure/FireStorageImpl.go              | Go       |        134 |          7 |         30 |        171 |
+| /home/aditya/projects/backend/golang/backend-jobs/api/Infrastructure/IDatabaseConnNetwork.go         | Go       |          7 |          7 |          3 |         17 |
+| /home/aditya/projects/backend/golang/backend-jobs/api/Infrastructure/IEchoRouter.go                  | Go       |         14 |          6 |          3 |         23 |
+| /home/aditya/projects/backend/golang/backend-jobs/api/Infrastructure/IFireStorage.go                 | Go       |          7 |          6 |          2 |         15 |
+| /home/aditya/projects/backend/golang/backend-jobs/api/Infrastructure/IRedisConn.go                   | Go       |          7 |          6 |          2 |         15 |
+| /home/aditya/projects/backend/golang/backend-jobs/api/Infrastructure/RedisConnImpl.go                | Go       |         74 |          7 |         13 |         94 |
+| /home/aditya/projects/backend/golang/backend-jobs/api/Model/Entity/Country.go                        | Go       |          4 |          6 |          2 |         12 |
+| /home/aditya/projects/backend/golang/backend-jobs/api/Model/Entity/District.go                       | Go       |          4 |          6 |          2 |         12 |
+| /home/aditya/projects/backend/golang/backend-jobs/api/Model/Entity/Employe/CombinedEmployeAccount.go | Go       |          9 |          0 |          1 |         10 |
+| /home/aditya/projects/backend/golang/backend-jobs/api/Model/Entity/Employe/EmployeAccount.go         | Go       |         20 |          6 |          4 |         30 |
+| /home/aditya/projects/backend/golang/backend-jobs/api/Model/Entity/Employe/EmployeAddress.go         | Go       |         10 |          6 |          2 |         18 |
+| /home/aditya/projects/backend/golang/backend-jobs/api/Model/Entity/Employe/EmployeAttachment.go      | Go       |          8 |          6 |          2 |         16 |
+| /home/aditya/projects/backend/golang/backend-jobs/api/Model/Entity/Employe/EmployeData.go            | Go       |         11 |          6 |          2 |         19 |
+| /home/aditya/projects/backend/golang/backend-jobs/api/Model/Entity/Employe/EmployeEducation.go       | Go       |         13 |          6 |          3 |         22 |
+| /home/aditya/projects/backend/golang/backend-jobs/api/Model/Entity/Employe/EmployeExperience.go      | Go       |         13 |          6 |          3 |         22 |
+| /home/aditya/projects/backend/golang/backend-jobs/api/Model/Entity/Employe/EmployeSocial.go          | Go       |          9 |          6 |          3 |         18 |
+| /home/aditya/projects/backend/golang/backend-jobs/api/Model/Entity/Province.go                       | Go       |          4 |          6 |          2 |         12 |
+| /home/aditya/projects/backend/golang/backend-jobs/api/Model/Response.go                              | Go       |          6 |          6 |          2 |         14 |
+| /home/aditya/projects/backend/golang/backend-jobs/api/Readme.md                                      | Markdown |         45 |          0 |         21 |         66 |
+| /home/aditya/projects/backend/golang/backend-jobs/api/Repository/Employe/EmployeImplRepo.go          | Go       |        278 |         15 |         62 |        355 |
+| /home/aditya/projects/backend/golang/backend-jobs/api/Repository/Employe/Employe_suite_test.go       | Go       |         10 |          0 |          4 |         14 |
+| /home/aditya/projects/backend/golang/backend-jobs/api/Repository/Employe/Employe_test.go             | Go       |        148 |          2 |         17 |        167 |
+| /home/aditya/projects/backend/golang/backend-jobs/api/Repository/Employe/IEmployeRepo.go             | Go       |         18 |          6 |          3 |         27 |
+| /home/aditya/projects/backend/golang/backend-jobs/api/Repository/IRegionRepo.go                      | Go       |         12 |          6 |          3 |         21 |
+| /home/aditya/projects/backend/golang/backend-jobs/api/Repository/RegionImplRepo.go                   | Go       |         38 |         12 |         10 |         60 |
+| /home/aditya/projects/backend/golang/backend-jobs/api/Repository/region_suite_test.go                | Go       |         10 |          6 |          4 |         20 |
+| /home/aditya/projects/backend/golang/backend-jobs/api/Repository/region_test.go                      | Go       |         77 |         12 |         17 |        106 |
+| /home/aditya/projects/backend/golang/backend-jobs/api/Service/Employe/EmployeImplService.go          | Go       |        145 |         10 |         35 |        190 |
+| /home/aditya/projects/backend/golang/backend-jobs/api/Service/Employe/IEmployeService.go             | Go       |         21 |          6 |          3 |         30 |
+| /home/aditya/projects/backend/golang/backend-jobs/api/Service/IRegionService.go                      | Go       |         12 |          6 |          3 |         21 |
+| /home/aditya/projects/backend/golang/backend-jobs/api/Service/RegionImplService.go                   | Go       |         29 |          6 |         11 |         46 |
+| /home/aditya/projects/backend/golang/backend-jobs/api/auth/jwtAuth.go                                | Go       |         18 |          6 |          6 |         30 |
+| /home/aditya/projects/backend/golang/backend-jobs/api/utils/CustomValidator.go                       | Go       |          8 |          0 |          3 |         11 |
+| /home/aditya/projects/backend/golang/backend-jobs/api/utils/RandomToken.go                           | Go       |         19 |          6 |          6 |         31 |
+| /home/aditya/projects/backend/golang/backend-jobs/api/utils/TemporyFile.go                           | Go       |         29 |          6 |          7 |         42 |
+| /home/aditya/projects/backend/golang/backend-jobs/assets/pages/email_verify.html                     | HTML     |         36 |          0 |          3 |         39 |
+| /home/aditya/projects/backend/golang/backend-jobs/go.mod                                             | XML      |         28 |          0 |          4 |         32 |
+| /home/aditya/projects/backend/golang/backend-jobs/main.go                                            | Go       |         45 |          9 |         13 |         67 |
+| Total                                                                                                |          |      1,883 |        283 |        410 |      2,576 |
++------------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+
