@@ -20,5 +20,6 @@ type IEmployeController interface {
 	AddEmployeEducation(c echo.Context) error
 	AddEmployeExperience(c echo.Context) error
 	AddEmployeSocial(c echo.Context) error
+	EmployeLogOut(c echo.Context) error
 	TestValidate(c echo.Context) (err error)
 }

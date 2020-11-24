@@ -12,6 +12,7 @@ import (
 	"strconv"
 	"time"
 
+	model "github.com/aditya37/backend-jobs/api/Model"
 	"github.com/go-redis/redis/v8"
 )
 
@@ -47,7 +48,10 @@ func (r *RedisConnImpl) RedisPing() (string,error) {
 	)
 	RedisClient := r.ConnectToRedis()
 	pong,err := RedisClient.Ping(cntx).Result()
-	return pong,err
+	if err != nil {
+		return "",err
+	}
+	return pong,nil
 }
 
 func (r *RedisConnImpl) AddEmailVerify(id int64,token string) error {
@@ -91,4 +95,58 @@ func (r *RedisConnImpl) RemoveToken(key string) error {
 		return err
 	}
 	return nil
+}
+
+// FIXME: Dead Code-1
+func (r *RedisConnImpl) CreateAuth(userID int64,TokenDetail *model.TokenDetails) error {
+	
+	var (
+		cntx = context.Background()
+	)
+
+	AccessToken  := time.Unix(TokenDetail.AccessTokenExp,0)
+	RefreshToken := time.Unix(TokenDetail.RefreshTokenExp,0)
+	now := time.Now()
+
+	RedisClient   := r.ConnectToRedis()
+	AccesTokenErr := RedisClient.Set(cntx,TokenDetail.AccessUuid,strconv.Itoa(int(userID)), AccessToken.Sub(now)).Err()
+	if AccesTokenErr != nil {
+		return AccesTokenErr
+	}
+
+	RefreshTokenErr := RedisClient.Set(cntx,TokenDetail.RefreshUuid,strconv.Itoa(int(userID)), RefreshToken.Sub(now)).Err()
+	if RefreshTokenErr != nil {
+		return RefreshTokenErr
+	}
+	return nil
+}
+
+func (r *RedisConnImpl) FetchAuth(auth *model.AccessDetails) (uint64,error) {
+
+	var (
+		cntx = context.Background()
+	)
+	RedisClient   := r.ConnectToRedis()
+
+	AccessUuid,err := RedisClient.Get(cntx,auth.AccessUuid).Result()
+	if err != nil {
+		return 0,err
+	}
+	accId,_ := strconv.ParseUint(AccessUuid,10,64)
+	return accId,nil
+}
+
+func (r *RedisConnImpl) DeleteAuth(uuID string) (int64,error) {
+
+	var (
+		cntx = context.Background()
+	)
+	RedisClient := r.ConnectToRedis()
+
+	Deleted,err :=RedisClient.Del(cntx,uuID).Result()
+	if err != nil {
+		return 0,err
+	}
+	
+	return Deleted,nil
 }

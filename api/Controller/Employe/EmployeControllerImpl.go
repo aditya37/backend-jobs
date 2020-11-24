@@ -148,6 +148,22 @@ func (e *EmployeControllerImpl) RegisterEmploye(c echo.Context) error {
 
 func (e *EmployeControllerImpl) GetEmployeById(c echo.Context) error {
 	
+	// Validate Auth
+	ExtractJwtData,err := auth.ExtractMetaData(c)
+	if err != nil {
+		return c.JSON(http.StatusUnauthorized,response.SuccessResponse{
+			Status:0,
+			Message:err.Error(),
+		})
+	}
+	_,err = e.EmployeRedis.FetchAuth(ExtractJwtData)
+	if err != nil {
+		return c.JSON(http.StatusUnauthorized,response.SuccessResponse{
+			Status:0,
+			Message:err.Error(),
+		})
+	}
+	
 	EmployeId,_:= strconv.Atoi(c.Param("id"))
 	GetEmploye,err := e.EmployeService.GetEmployeById(EmployeId)
 	if err != nil {
@@ -192,6 +208,7 @@ func (e *EmployeControllerImpl) LoginEmploye(c echo.Context) error {
 			Message:err.Error(),
 		})
 	}
+
 	GenerateToken,err := auth.GenerateToken(DoLogin[0].Id)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest,response.SuccessResponse{
@@ -200,12 +217,20 @@ func (e *EmployeControllerImpl) LoginEmploye(c echo.Context) error {
 		})
 	}
 
+	if SaveToken := e.EmployeRedis.CreateAuth(DoLogin[0].Id,GenerateToken); SaveToken != nil {
+		return c.JSON(http.StatusUnprocessableEntity,response.SuccessResponse{
+			Status:0,
+			Message:SaveToken.Error(),
+		})
+	}
+
 	return c.JSON(http.StatusAccepted,response.SuccessResponse{
 		Status: 1,
 		Message: "Login Success",
 		Result:map[string]interface{}{
 			"idEmploye" :DoLogin[0].Id,
-			"access_token":string(GenerateToken),
+			"access_token":GenerateToken.AccessToken,
+			"refresh_token":GenerateToken.RefreshToken,
 		},
 	})
 }
@@ -293,10 +318,25 @@ func (e *EmployeControllerImpl) AddEmployeData(c echo.Context) error {
 		EmployeData *model.EmployeData
 	)
 
-	EmployeId,_:= strconv.Atoi(c.Param("id"))
+	// Validate Auth
+	ExtractJwtData,err := auth.ExtractMetaData(c)
+	if err != nil {
+		return c.JSON(http.StatusUnauthorized,response.SuccessResponse{
+			Status:0,
+			Message:"unauthorized",
+		})
+	}
+	_,err = e.EmployeRedis.FetchAuth(ExtractJwtData)
+	if err != nil {
+		return c.JSON(http.StatusUnauthorized,response.SuccessResponse{
+			Status:0,
+			Message:"unauthorized",
+		})
+	}
 
+	EmployeId,_:= strconv.Atoi(c.Param("id"))
 	// Decode request
-	err := json.NewDecoder(c.Request().Body).Decode(&EmployeData)
+	err = json.NewDecoder(c.Request().Body).Decode(&EmployeData)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest,response.SuccessResponse{
 			Status:0,
@@ -344,10 +384,25 @@ func (e *EmployeControllerImpl) AddEmployeAddress(c echo.Context) error {
 		EmployeAddress *model.EmployeAddress
 	)
 
-	EmployeId,_ := strconv.Atoi(c.Param("id"))
+	// Validate Auth
+	ExtractJwtData,err := auth.ExtractMetaData(c)
+	if err != nil {
+		return c.JSON(http.StatusUnauthorized,response.SuccessResponse{
+			Status:0,
+			Message:"unauthorized",
+		})
+	}
+	_,err = e.EmployeRedis.FetchAuth(ExtractJwtData)
+	if err != nil {
+		return c.JSON(http.StatusUnauthorized,response.SuccessResponse{
+			Status:0,
+			Message:"unauthorized",
+		})
+	}
 
+	EmployeId,_ := strconv.Atoi(c.Param("id"))
 	// Decode request
-	err := json.NewDecoder(c.Request().Body).Decode(&EmployeAddress)
+	err = json.NewDecoder(c.Request().Body).Decode(&EmployeAddress)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest,response.SuccessResponse{
 			Status: 0,
@@ -380,9 +435,24 @@ func (e *EmployeControllerImpl) AddEmployeAddress(c echo.Context) error {
 }
 // FIXME: Buat Menjadi pisah, tidak bisa di buat multiple ex: Portofolio upload
 func (e *EmployeControllerImpl) AddEmployeAttachment(c echo.Context) error  {
-	
+
+	// Validate Auth
+	ExtractJwtData,err := auth.ExtractMetaData(c)
+	if err != nil {
+		return c.JSON(http.StatusUnauthorized,response.SuccessResponse{
+			Status:0,
+			Message:"unauthorized",
+		})
+	}
+	_,err = e.EmployeRedis.FetchAuth(ExtractJwtData)
+	if err != nil {
+		return c.JSON(http.StatusUnauthorized,response.SuccessResponse{
+			Status:0,
+			Message:"unauthorized",
+		})
+	}
+
 	EmployeId,_:= strconv.Atoi(c.Param("id"))
-	
 	// Portofolio 
 	Portofolio,handler,err := c.Request().FormFile("portofolio_file")
 	if err != nil {
@@ -496,9 +566,24 @@ func (e *EmployeControllerImpl) AddEmployeEducation(c echo.Context) error {
 		EmployeEducation *model.EmployeEducation
 	)
 
-	EmployeId,_ := strconv.Atoi(c.Param("id"))
+	// Validate Auth
+	ExtractJwtData,err := auth.ExtractMetaData(c)
+	if err != nil {
+		return c.JSON(http.StatusUnauthorized,response.SuccessResponse{
+			Status:0,
+			Message:"unauthorized",
+		})
+	}
+	_,err = e.EmployeRedis.FetchAuth(ExtractJwtData)
+	if err != nil {
+		return c.JSON(http.StatusUnauthorized,response.SuccessResponse{
+			Status:0,
+			Message:"unauthorized",
+		})
+	}
 
-	err := json.NewDecoder(c.Request().Body).Decode(&EmployeEducation)
+	EmployeId,_ := strconv.Atoi(c.Param("id"))
+	err = json.NewDecoder(c.Request().Body).Decode(&EmployeEducation)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest,response.SuccessResponse{
 			Status: 0,
@@ -534,10 +619,26 @@ func (e *EmployeControllerImpl) AddEmployeExperience(c echo.Context) error {
 	var (
 		EmployeExperience *model.EmployeExperience
 	)
-	
-	EmployeId,_ := strconv.Atoi(c.Param("id"))
 
-	err := json.NewDecoder(c.Request().Body).Decode(&EmployeExperience)
+	// Validate Auth
+	// Fixme: Bikin singleton biar gak buang2 rows
+	ExtractJwtData,err := auth.ExtractMetaData(c)
+	if err != nil {
+		return c.JSON(http.StatusUnauthorized,response.SuccessResponse{
+			Status:0,
+			Message:"unauthorized",
+		})
+	}
+	_,err = e.EmployeRedis.FetchAuth(ExtractJwtData)
+	if err != nil {
+		return c.JSON(http.StatusUnauthorized,response.SuccessResponse{
+			Status:0,
+			Message:"unauthorized",
+		})
+	}
+
+	EmployeId,_ := strconv.Atoi(c.Param("id"))
+	err = json.NewDecoder(c.Request().Body).Decode(&EmployeExperience)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest,response.SuccessResponse{
 			Status:0,
@@ -574,10 +675,25 @@ func (e *EmployeControllerImpl) AddEmployeSocial(c echo.Context) error {
 	var (
 		EmployeSocial *model.EmployeSocial
 	)
+	
+	// Validate Auth
+	ExtractJwtData,err := auth.ExtractMetaData(c)
+	if err != nil {
+		return c.JSON(http.StatusUnauthorized,response.SuccessResponse{
+			Status:0,
+			Message:"unauthorized",
+		})
+	}
+	_,err = e.EmployeRedis.FetchAuth(ExtractJwtData)
+	if err != nil {
+		return c.JSON(http.StatusUnauthorized,response.SuccessResponse{
+			Status:0,
+			Message:"unauthorized",
+		})
+	}
 
 	EmployeId,_ := strconv.Atoi(c.Param("id"))
-
-	err := json.NewDecoder(c.Request().Body).Decode(&EmployeSocial)
+	err = json.NewDecoder(c.Request().Body).Decode(&EmployeSocial)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest,response.SuccessResponse{
 			Status:0,
@@ -607,4 +723,28 @@ func (e *EmployeControllerImpl) AddEmployeSocial(c echo.Context) error {
 		Message:"Success add your social media",
 	})
 
+}
+func (e *EmployeControllerImpl) EmployeLogOut(c echo.Context) error {
+
+	// Validate Auth
+	ExtractJwtData,err := auth.ExtractMetaData(c)
+	if err != nil {
+		return c.JSON(http.StatusUnauthorized,response.SuccessResponse{
+			Status:0,
+			Message:"unauthorized",
+		})
+	}
+
+	LogOut,err := e.EmployeRedis.DeleteAuth(ExtractJwtData.AccessUuid)
+	if err != nil || LogOut == 0 {
+		return c.JSON(http.StatusUnauthorized,response.SuccessResponse{
+			Status:0,
+			Message:"unauthorized",
+		})
+	}
+
+	return c.JSON(http.StatusOK,response.SuccessResponse{
+		Status:1,
+		Message:"Successfully logged out",
+	})
 }

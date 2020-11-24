@@ -13,7 +13,7 @@ import (
 	"os"
 
 	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
+	middleware "github.com/labstack/echo/v4/middleware"
 )
 
 type EchoRouterImpl struct {
@@ -45,18 +45,17 @@ func (e *EchoRouterImpl) Post(uri string,f func(e echo.Context) error){
 // TODO: declare middleware skipper
 func (e *EchoRouterImpl) RouteGroup(uri string) *echo.Group {
 	return e.EchoDispatcher.Group(uri,middleware.JWTWithConfig(middleware.JWTConfig{
-		Skipper: func(c echo.Context) bool {
-			switch c.Request().RequestURI {
+		Skipper:func(e echo.Context) bool {
+			switch e.Request().RequestURI {
 			case "/employes/":
 				return true
-			case "/employes/signup":
+			case "employes/signup":
 				return true
 			default:
 				break
 			}
 			return false
-		},
-		SigningMethod:"HS256",
+		},SigningMethod: "HS256",
 		SigningKey: []byte(os.Getenv("SECRET_KEY")),
 	}))
 }

@@ -62,6 +62,7 @@ func main() {
 	EmployeRoutes.POST("/:id/educations",EmployeController.AddEmployeEducation)
 	EmployeRoutes.POST("/:id/experiences",EmployeController.AddEmployeExperience)
 	EmployeRoutes.POST("/:id/socials",EmployeController.AddEmployeSocial)
+	EmployeRoutes.POST("/logout",EmployeController.EmployeLogOut)
 	
 	router.ErrorHandler() // Middleware error handling
 	
