@@ -1,7 +1,7 @@
 pipeline {
     agent any
     tools {
-       go 'go1.15'
+       go 'Go1.15'
     }
     environment {
         GO114MODULE = 'on'
@@ -34,13 +34,4 @@ pipeline {
         }
         
     }
-    post {
-        always {
-            emailext body: "${currentBuild.currentResult}: Job ${env.JOB_NAME} build ${env.BUILD_NUMBER}\n More info at: ${env.BUILD_URL}",
-                recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']],
-                to: "${params.RECIPIENTS}",
-                subject: "Jenkins Build ${currentBuild.currentResult}: Job ${env.JOB_NAME}"
-            
-        }
-    }  
 }
