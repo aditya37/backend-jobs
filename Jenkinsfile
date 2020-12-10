@@ -7,17 +7,13 @@ pipeline {
         GO114MODULE = 'on'
         CGO_ENABLED = 0 
         GOPATH = "${JENKINS_HOME}/jobs/${JOB_NAME}/builds/${BUILD_ID}"
-        DBNAME = db_jobs
-        DBUSER = admin
-        DBPASSWORD = lymousin
-        DBHOST = 192.168.1.14
-        DBPORT = 5432
     }
     stages {        
         stage('Pre Test') {
             steps {
                 echo 'Installing dependencies'
                 sh 'go version'
+                echo 'Dowloading dependencies'
                 sh 'go mod download'
             }
         }
