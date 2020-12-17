@@ -8,15 +8,20 @@ pipeline {
         CGO_ENABLED = 0 
         GOPATH = "${JENKINS_HOME}/jobs/${JOB_NAME}/builds/${BUILD_ID}"
     }
-    stages {        
+    stages {       
+         
         stage('Pre Test') {
             steps {
-                echo 'Installing dependencies'
+                echo 'Change .env.example to .env'
+                sh 'mv .env.example .env'
+                echo 'Get Golang Version'
                 sh 'go version'
+                echo 'Dowloading dependencies'
                 sh 'go mod download'
+                echo 'Migrating Database'
             }
         }
-        
+
         stage('Build') {
             steps {
                 echo 'Compiling and building'
@@ -34,13 +39,5 @@ pipeline {
         }
         
     }
-    post {
-        always {
-            emailext body: "${currentBuild.currentResult}: Job ${env.JOB_NAME} build ${env.BUILD_NUMBER}\n More info at: ${env.BUILD_URL}",
-                recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']],
-                to: "${params.RECIPIENTS}",
-                subject: "Jenkins Build ${currentBuild.currentResult}: Job ${env.JOB_NAME}"
-            
-        }
-    }  
+
 }
