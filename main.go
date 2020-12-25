@@ -38,7 +38,10 @@ func main() {
 		log.Panic(err)
 	}
 	
-	// database.DatabaseMigrate()
+	err = database.DatabaseMigrate()
+	if err != nil {
+		log.Println(err)
+	}
 	
 	EmployeRepo 	  := repository.NewEmployeImpl(ConnectDB)
 	EmployeService    := service.NewEmployeService(EmployeRepo)
