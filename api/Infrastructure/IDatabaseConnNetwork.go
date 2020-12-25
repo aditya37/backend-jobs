@@ -13,5 +13,5 @@ import (
 
 type DatabaseConnection interface {
 	DatabaseConn(host,port,username,password,dbname string) (*sqlx.DB,error)
-	// DatabaseMigrate()
+	DatabaseMigrate() error
 } 
