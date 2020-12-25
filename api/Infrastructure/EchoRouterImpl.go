@@ -49,7 +49,7 @@ func (e *EchoRouterImpl) RouteGroup(uri string) *echo.Group {
 			switch e.Request().RequestURI {
 			case "/employes/":
 				return true
-			case "employes/signup":
+			case "/employes/signup":
 				return true
 			default:
 				break

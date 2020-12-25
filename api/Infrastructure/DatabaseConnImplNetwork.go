@@ -10,6 +10,9 @@ package infrastructure
 import (
 	"fmt"
 
+	"github.com/golang-migrate/migrate/v4"
+	"github.com/golang-migrate/migrate/v4/database/postgres"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 )
@@ -26,16 +29,25 @@ func NewDatabaseConnection() DatabaseConnection {
 func (s *_databaseConnection) DatabaseConn(host,port,username,password,dbname string) (*sqlx.DB,error){
 	var err error
 
-	URL := fmt.Sprintf("host=%s port=%s user=%s dbname=%s sslmode=disable password=%s", host, port, username, dbname, password)
+	URL := fmt.Sprintf("host=%s port=%s user=%s dbname=%s sslmode=disable search_path=public password=%s", host, port, username, dbname, password)
 	s.Database,err = sqlx.Connect("postgres",URL)
 	if err != nil {
 		return nil,err
 	}
-	
 	return s.Database,nil
 }
 
-// func (s *_databaseConnection) DatabaseMigrate() {
-// 	// s.Database.Migrator().DropTable(&model.EmployeAccount{},&model.EmployeAddress{},&model.EmployeAttachment{},&model.EmployeData{},&model.EmployeExperience{},&model.EmployeSocial{},&model.EmployeEducation{},&region.Country{},&region.District{},&region.Province{})
-// 	s.Database.AutoMigrate(&model.EmployeAccount{},&model.EmployeAddress{},&model.EmployeAttachment{},&model.EmployeData{},&model.EmployeExperience{},&model.EmployeSocial{},&model.EmployeEducation{},&region.Country{},&region.District{},&region.Province{})
-// }
+func (s *_databaseConnection) DatabaseMigrate() error {
+	DBDriver,err := postgres.WithInstance(s.Database.DB,&postgres.Config{})
+	if err != nil {
+		return err
+	}
+	migrate,err := migrate.NewWithDatabaseInstance("file://Database","postgres",DBDriver)
+	if err != nil {
+		return err
+	}
+	if err := migrate.Up(); err != nil {
+		return err
+	}
+	return nil
+}
