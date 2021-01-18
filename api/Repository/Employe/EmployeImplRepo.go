@@ -24,36 +24,36 @@ var (
 	err error
 )
 
-func NewEmployeImpl (DBClient *sqlx.DB) IEmployeRepo {
+func NewEmployeImpl(DBClient *sqlx.DB) IEmployeRepo {
 	return &EmployeImpl{Database: DBClient}
 }
 
 // Function for hash or salting password
-func HashPassword(password string) ([]byte,error){
-	return bcrypt.GenerateFromPassword([]byte(password),bcrypt.DefaultCost)
+func HashPassword(password string) ([]byte, error) {
+	return bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 }
 
 // Function for decrypt password
-func VerifyPassword(hashedPassword,password string) error {
-	return bcrypt.CompareHashAndPassword([]byte(hashedPassword),[]byte(password))
+func VerifyPassword(hashedPassword, password string) error {
+	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
 }
 
-func (e *EmployeImpl) RegisterEmploye(addEmploye *model.EmployeAccount) (*model.EmployeAccount,error) {
-	
+func (e *EmployeImpl) RegisterEmploye(addEmploye *model.EmployeAccount) (*model.EmployeAccount, error) {
+
 	var err error
-	
+
 	TempData := []model.EmployeAccount{}
-	err = e.Database.Select(&TempData,"SELECT username FROM employe_accounts WHERE username=$1",addEmploye.Username)
+	err = e.Database.Select(&TempData, "SELECT username FROM employe_accounts WHERE username=$1", addEmploye.Username)
 	if err != nil {
-		return nil,err
+		return nil, err
 	}
 
 	if len(TempData) > 0 {
-		return nil,errors.New("Username already exists")
+		return nil, errors.New("Username already exists")
 	}
-	
+
 	// Hash password
-	HashPassword,err := HashPassword(addEmploye.Password)
+	HashPassword, err := HashPassword(addEmploye.Password)
 	addEmploye.Password = string(HashPassword)
 	addEmploye.IsActive = "False"
 	SQLInsert := `INSERT INTO employe_accounts(
@@ -72,41 +72,41 @@ func (e *EmployeImpl) RegisterEmploye(addEmploye *model.EmployeAccount) (*model.
 			:photo_profile,
 			:refresh_token,
 			:is_active)`
-		
-	_,err = e.Database.NamedExec(SQLInsert,addEmploye)
+
+	_, err = e.Database.NamedExec(SQLInsert, addEmploye)
 	if err != nil {
-		return nil,err
+		return nil, err
 	}
 
-	return addEmploye,nil
+	return addEmploye, nil
 }
 
-func (e *EmployeImpl) EmployeLogin(username,password string) ([]model.EmployeAccount,error) {
-	
+func (e *EmployeImpl) EmployeLogin(username, password string) ([]model.EmployeAccount, error) {
+
 	var EmployeAccount []model.EmployeAccount
-	err = e.Database.Select(&EmployeAccount,"SELECT username,id,password FROM employe_accounts WHERE username=$1 AND is_active='True'",username)
+	err = e.Database.Select(&EmployeAccount, "SELECT username,id,password FROM employe_accounts WHERE username=$1 AND is_active='True'", username)
 	if err != nil {
-		return nil,err
+		return nil, err
 	}
 
 	if len(EmployeAccount) <= 0 {
-		return nil,errors.New("Username not found")
+		return nil, errors.New("Username not found")
 	}
 	// Verify password and dencrypt password
-	err := VerifyPassword(EmployeAccount[0].Password,password)
+	err := VerifyPassword(EmployeAccount[0].Password, password)
 	if err != nil {
-		return nil,err
+		return nil, err
 	}
 
-	return EmployeAccount,nil
+	return EmployeAccount, nil
 }
 
 func (e *EmployeImpl) RefreshEmailVerify(email string) []model.EmployeAccount {
 	var (
 		Result []model.EmployeAccount
 	)
-	
-	err := e.Database.Select(&Result,"SELECT * FROM employe_accounts WHERE email=$1 AND is_active='False'",email)
+
+	err := e.Database.Select(&Result, "SELECT * FROM employe_accounts WHERE email=$1 AND is_active='False'", email)
 	if err != nil {
 		return nil
 	}
@@ -114,9 +114,9 @@ func (e *EmployeImpl) RefreshEmailVerify(email string) []model.EmployeAccount {
 }
 
 func (e *EmployeImpl) EmployeEmailVerify(employeId string) error {
-	
+
 	TempData := []model.EmployeAccount{}
-	err = e.Database.Select(&TempData,"SELECT id,is_active FROM employe_accounts WHERE id=$1 AND is_active='False'",employeId)
+	err = e.Database.Select(&TempData, "SELECT id,is_active FROM employe_accounts WHERE id=$1 AND is_active='False'", employeId)
 	if err != nil {
 		return err
 	}
@@ -124,23 +124,23 @@ func (e *EmployeImpl) EmployeEmailVerify(employeId string) error {
 	if len(TempData) <= 0 {
 		return errors.New("Account Has Verified")
 	}
-	_,err := e.Database.Queryx("UPDATE employe_accounts SET is_active='True' WHERE id=$1",employeId)
+	_, err := e.Database.Queryx("UPDATE employe_accounts SET is_active='True' WHERE id=$1", employeId)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (e *EmployeImpl) AddEmployeData(employeData *model.EmployeData) (*model.EmployeData,error){
-	
+func (e *EmployeImpl) AddEmployeData(employeData *model.EmployeData) (*model.EmployeData, error) {
+
 	TempData := []model.EmployeData{}
-	err = e.Database.Select(&TempData,"SELECT employe_id FROM employe_data WHERE employe_id=$1",employeData.EmployeId)
+	err = e.Database.Select(&TempData, "SELECT employe_id FROM employe_data WHERE employe_id=$1", employeData.EmployeId)
 	if err != nil {
-		return nil,err
+		return nil, err
 	}
 
 	if len(TempData) >= 1 {
-		return nil,errors.New("Duplicate Data")
+		return nil, errors.New("Duplicate Data")
 	}
 
 	SQLInsert := `INSERT INTO employe_data VALUES(
@@ -153,24 +153,24 @@ func (e *EmployeImpl) AddEmployeData(employeData *model.EmployeData) (*model.Emp
 		:about,
 		:employe_id)`
 
-	_,err := e.Database.NamedExec(SQLInsert,employeData)
-	if err  != nil {
-		return nil,err
+	_, err := e.Database.NamedExec(SQLInsert, employeData)
+	if err != nil {
+		return nil, err
 	}
-	return employeData,nil
+	return employeData, nil
 }
 
-func (e *EmployeImpl) AddEmployeAddress(employeAddr *model.EmployeAddress) (*model.EmployeAddress,error) {
-	
+func (e *EmployeImpl) AddEmployeAddress(employeAddr *model.EmployeAddress) (*model.EmployeAddress, error) {
+
 	TempData := []model.EmployeAddress{}
-	err = e.Database.Select(&TempData,"SELECT employe_id FROM employe_addresses WHERE employe_id=$1",employeAddr.EmployeId)
+	err = e.Database.Select(&TempData, "SELECT employe_id FROM employe_addresses WHERE employe_id=$1", employeAddr.EmployeId)
 	if err != nil {
-		return nil,err
+		return nil, err
 	}
 
-	// Check data, if same data found 
+	// Check data, if same data found
 	if len(TempData) >= 1 {
-		return nil,errors.New("Duplicate Data")
+		return nil, errors.New("Duplicate Data")
 	}
 
 	SQLInsert := `INSERT INTO employe_addresses VALUES(
@@ -182,51 +182,51 @@ func (e *EmployeImpl) AddEmployeAddress(employeAddr *model.EmployeAddress) (*mod
 		:postal_code,
 		:employe_id)`
 
-	_,err := e.Database.NamedExec(SQLInsert,employeAddr)
+	_, err := e.Database.NamedExec(SQLInsert, employeAddr)
 	if err != nil {
-		return nil,err
+		return nil, err
 	}
-	return employeAddr,nil
+	return employeAddr, nil
 }
 
-func (e *EmployeImpl) AddEmployeAttachment(employeAttach *model.EmployeAttachment) (*model.EmployeAttachment,error) {
-	
+func (e *EmployeImpl) AddEmployeAttachment(employeAttach *model.EmployeAttachment) (*model.EmployeAttachment, error) {
+
 	TempData := []model.EmployeAttachment{}
-	err = e.Database.Select(&TempData,"SELECT employe_id FROM employe_attachments WHERE employe_id=$1",employeAttach.EmployeId)
+	err = e.Database.Select(&TempData, "SELECT employe_id FROM employe_attachments WHERE employe_id=$1", employeAttach.EmployeId)
 	if err != nil {
-		return nil,err
+		return nil, err
 	}
-	
+
 	if len(TempData) > 1 {
-		return nil,errors.New("Duplicate Data")
+		return nil, errors.New("Duplicate Data")
 	}
 
 	SQLInsert := `INSERT INTO employe_attachments VALUES(
 		:portofolio_file,
 		:resume_file,
-		:employe_id,
 		:resume_object,
-		:portofolio_object)`
+		:portofolio_object,
+		:employe_id)`
 
-	_,err := e.Database.NamedExec(SQLInsert,employeAttach) 
+	_, err := e.Database.NamedExec(SQLInsert, employeAttach)
 	if err != nil {
-		return nil,err
+		return nil, err
 	}
-	return employeAttach,nil
+	return employeAttach, nil
 }
 
-func (e *EmployeImpl) AddEmployeSocial(employeSocial *model.EmployeSocial) (*model.EmployeSocial,error) {
-	
+func (e *EmployeImpl) AddEmployeSocial(employeSocial *model.EmployeSocial) (*model.EmployeSocial, error) {
+
 	TempData := []model.EmployeSocial{}
-	err = e.Database.Select(&TempData,"SELECT employe_id FROM employe_socials WHERE employe_id=$1",employeSocial.EmployeId)
+	err = e.Database.Select(&TempData, "SELECT employe_id FROM employe_socials WHERE employe_id=$1", employeSocial.EmployeId)
 	if err != nil {
-		return nil,err
+		return nil, err
 	}
-	
+
 	if len(TempData) >= 1 {
-		return nil,errors.New("Duplicate Data")
+		return nil, errors.New("Duplicate Data")
 	}
-	
+
 	SQLInsert := `INSERT INTO employe_socials VALUES(
 		:portofolio_link,
 		:github_link,
@@ -235,15 +235,15 @@ func (e *EmployeImpl) AddEmployeSocial(employeSocial *model.EmployeSocial) (*mod
 		:twitter_link,
 		:employe_id)`
 
-	_,err := e.Database.NamedExec(SQLInsert,employeSocial)
+	_, err := e.Database.NamedExec(SQLInsert, employeSocial)
 	if err != nil {
-		return nil,err
+		return nil, err
 	}
 
-	return employeSocial,nil
+	return employeSocial, nil
 }
 
-func (e *EmployeImpl) AddEmployeExperience(experience *model.EmployeExperience) (*model.EmployeExperience,error) {
+func (e *EmployeImpl) AddEmployeExperience(experience *model.EmployeExperience) (*model.EmployeExperience, error) {
 
 	sql := `INSERT INTO employe_experiences VALUES(
 		:company_name,
@@ -254,16 +254,16 @@ func (e *EmployeImpl) AddEmployeExperience(experience *model.EmployeExperience) 
 		:end_work,
 		:employe_id)`
 
-	_,err := e.Database.NamedExec(sql,experience)
+	_, err := e.Database.NamedExec(sql, experience)
 	if err != nil {
-		return nil,err
+		return nil, err
 	}
 
-	return experience,nil
+	return experience, nil
 }
 
-func (e *EmployeImpl) AddEmployeEducation(employeEdu *model.EmployeEducation) (*model.EmployeEducation,error) {
-	
+func (e *EmployeImpl) AddEmployeEducation(employeEdu *model.EmployeEducation) (*model.EmployeEducation, error) {
+
 	sql := `INSERT INTO employe_educations VALUES(
 		:institution_name,
 		:degree,
@@ -272,17 +272,17 @@ func (e *EmployeImpl) AddEmployeEducation(employeEdu *model.EmployeEducation) (*
 		:end_education,
 		:employe_id)`
 
-	_,err := e.Database.NamedExec(sql,employeEdu)
+	_, err := e.Database.NamedExec(sql, employeEdu)
 	if err != nil {
-		return nil,err
+		return nil, err
 	}
-	return employeEdu,nil
+	return employeEdu, nil
 }
 
-func (e *EmployeImpl) GetEmployeById(employeId int) ([]model.EmployeAccount,error) {
+func (e *EmployeImpl) GetEmployeById(employeId int) ([]model.EmployeAccount, error) {
 
 	// FIXME: search how to handle sql.nullstring
-	result := []model.EmployeAccount{} 
+	result := []model.EmployeAccount{}
 
 	sql := `SELECT 
 		employe_accounts.id,
@@ -343,27 +343,27 @@ func (e *EmployeImpl) GetEmployeById(employeId int) ([]model.EmployeAccount,erro
 	WHERE 
 		employe_accounts.id=$1 AND employe_accounts.is_active='True'`
 
-	_rows,err := e.Database.Queryx(sql,employeId)
+	_rows, err := e.Database.Queryx(sql, employeId)
 	if err != nil {
-		return nil,err
+		return nil, err
 	}
-	
+
 	for _rows.Next() {
 
 		var rows model.CombinedEmployeAccount
-		
+
 		// Do structScan
 		if err := _rows.StructScan(&rows); err != nil {
-			return nil,err
+			return nil, err
 		}
 
 		// Mapping dengan library carta
-		if err := carta.Map(_rows.Rows,&result); err != nil {
-			return nil,err
+		if err := carta.Map(_rows.Rows, &result); err != nil {
+			return nil, err
 		}
 	}
 
-	return result,nil
+	return result, nil
 }
 
 func (e *EmployeImpl) DeleteAccount(employeId int) error {
