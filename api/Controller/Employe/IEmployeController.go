@@ -21,5 +21,6 @@ type IEmployeController interface {
 	AddEmployeExperience(c echo.Context) error
 	AddEmployeSocial(c echo.Context) error
 	EmployeLogOut(c echo.Context) error
-	TestValidate(c echo.Context) (err error)
+	RefreshToken(c echo.Context) (err error)
+	DeleteAccount(c echo.Context) error
 }

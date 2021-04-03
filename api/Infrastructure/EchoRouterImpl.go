@@ -20,7 +20,7 @@ type EchoRouterImpl struct {
 	EchoDispatcher *echo.Echo
 }
 
-func NewEchoRouter (EchoRouter *echo.Echo) IEchoRouter {
+func NewEchoRouter(EchoRouter *echo.Echo) IEchoRouter {
 	return &EchoRouterImpl{EchoDispatcher: EchoRouter}
 }
 
@@ -30,22 +30,22 @@ func (e *EchoRouterImpl) StartServer(port string) {
 
 func (e *EchoRouterImpl) RouterLogger() {
 	e.EchoDispatcher.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
-		Format : `=> ${time_rfc3339} ${status} ${method} ${host}${path} ${latency_name}` + "\n",
+		Format: `=> ${time_rfc3339} ${status} ${method} ${host}${path} ${latency_name}` + "\n",
 	}))
 }
 
-func (e *EchoRouterImpl) Get(uri string,f func(e echo.Context) error) {
-	e.EchoDispatcher.GET(uri,f)
+func (e *EchoRouterImpl) Get(uri string, f func(e echo.Context) error) {
+	e.EchoDispatcher.GET(uri, f)
 }
 
-func (e *EchoRouterImpl) Post(uri string,f func(e echo.Context) error){
-	e.EchoDispatcher.POST(uri,f)
+func (e *EchoRouterImpl) Post(uri string, f func(e echo.Context) error) {
+	e.EchoDispatcher.POST(uri, f)
 }
 
 // TODO: declare middleware skipper
 func (e *EchoRouterImpl) RouteGroup(uri string) *echo.Group {
-	return e.EchoDispatcher.Group(uri,middleware.JWTWithConfig(middleware.JWTConfig{
-		Skipper:func(e echo.Context) bool {
+	return e.EchoDispatcher.Group(uri, middleware.JWTWithConfig(middleware.JWTConfig{
+		Skipper: func(e echo.Context) bool {
 			switch e.Request().RequestURI {
 			case "/employes/":
 				return true
@@ -55,7 +55,7 @@ func (e *EchoRouterImpl) RouteGroup(uri string) *echo.Group {
 				break
 			}
 			return false
-		},SigningMethod: "HS256",
+		}, SigningMethod: "HS256",
 		SigningKey: []byte(os.Getenv("SECRET_KEY")),
 	}))
 }
@@ -68,24 +68,24 @@ func (e *EchoRouterImpl) ErrorHandler() {
 		case *echo.HTTPError:
 			switch httpErrors.Code {
 			case 401:
-				c.JSON(http.StatusUnauthorized,echo.Map{
-					"Status":0,
-					"Message":httpErrors.Message,
+				c.JSON(http.StatusUnauthorized, echo.Map{
+					"Status":  0,
+					"message": httpErrors.Message,
 				})
 			case 400:
-				c.JSON(http.StatusBadRequest,echo.Map{
-					"Status":0,
-					"Message":httpErrors.Message,
+				c.JSON(http.StatusBadRequest, echo.Map{
+					"status":  0,
+					"message": httpErrors.Message,
 				})
 			case 404:
-				c.JSON(http.StatusNotFound,echo.Map{
-					"Status":0,
-					"Message":httpErrors.Message,
+				c.JSON(http.StatusNotFound, echo.Map{
+					"status":  0,
+					"message": httpErrors.Message,
 				})
 			default:
-				c.JSON(http.StatusBadGateway,echo.Map{
-					"Status":0,
-					"Message":httpErrors.Message,
+				c.JSON(http.StatusBadGateway, echo.Map{
+					"status":  0,
+					"message": httpErrors.Message,
 				})
 			}
 		default:

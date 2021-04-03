@@ -21,7 +21,7 @@ CREATE TABLE  employe_accounts (
 CREATE TABLE employe_addresses (
     country_name VARCHAR(50),
     province_name VARCHAR(50),
-    district_naem VARCHAR(50),
+    district_name VARCHAR(50),
     address_1 VARCHAR(100),
     address_2 VARCHAR(100),
     postal_code bigint,

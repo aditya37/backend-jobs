@@ -9,6 +9,7 @@ package controller
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -16,6 +17,7 @@ import (
 
 	"github.com/aditya37/backend-jobs/api/auth"
 	util "github.com/aditya37/backend-jobs/api/utils"
+	"github.com/dgrijalva/jwt-go"
 
 	infrastructure "github.com/aditya37/backend-jobs/api/Infrastructure"
 	response "github.com/aditya37/backend-jobs/api/Model"
@@ -559,9 +561,104 @@ func (e *EmployeControllerImpl) AddEmployeAttachment(c echo.Context) error {
 	})
 }
 
-func (e *EmployeControllerImpl) TestValidate(c echo.Context) (err error) {
-	return
+func (e *EmployeControllerImpl) RefreshToken(c echo.Context) (err error) {
+
+	MapToken := map[string]string{}
+	if err := c.Bind(&MapToken); err != nil {
+		return c.JSON(http.StatusUnprocessableEntity, response.SuccessResponse{
+			Status:  0,
+			Message: err.Error(),
+		})
+	}
+
+	refreshToken := MapToken["refresh_token"]
+
+	// Parse JWT token
+	token, err := jwt.Parse(refreshToken, func(token *jwt.Token) (interface{}, error) {
+		// confirm method SigningMethodHMAC
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("Header => %v", token.Header["alg"])
+		}
+		return []byte(os.Getenv("REFRESH_TOKEN_SECRET")), nil
+	})
+
+	// If refresh token expired
+	if err != nil {
+		return c.JSON(http.StatusUnauthorized, response.SuccessResponse{
+			Status:  0,
+			Message: "Refresh Token Expired",
+		})
+	}
+
+	// Token isValid?
+	if _, isValid := token.Claims.(jwt.Claims); !isValid && !token.Valid {
+		return c.JSON(http.StatusUnauthorized, response.SuccessResponse{
+			Status:  0,
+			Message: err.Error(),
+		})
+	}
+
+	claims, isValid := token.Claims.(jwt.MapClaims)
+	if !isValid {
+		return c.JSON(http.StatusUnprocessableEntity, response.SuccessResponse{
+			Status:  0,
+			Message: err.Error(),
+		})
+	}
+
+	// Claim uuid and refresh_uuid from jwt  MapClaims
+	RefreshUUId, isValid := claims["refresh_uuid"].(string)
+	if isValid == false {
+		return c.JSON(http.StatusUnprocessableEntity, response.SuccessResponse{
+			Status:  0,
+			Message: err.Error(),
+		})
+	}
+
+	UserId, err := strconv.ParseInt(fmt.Sprintf("%.f", claims["id"]), 10, 64)
+	if err != nil {
+		return c.JSON(http.StatusUnprocessableEntity, response.SuccessResponse{
+			Status:  0,
+			Message: err.Error(),
+		})
+	}
+
+	// Delete token from redis
+	TokenDeleted, err := e.EmployeRedis.DeleteAuth(RefreshUUId)
+	if err != nil || TokenDeleted == 0 {
+		return c.JSON(http.StatusUnauthorized, response.SuccessResponse{
+			Status:  0,
+			Message: "Unauthorized",
+		})
+	}
+
+	// Generate new jwt token
+	GeneratedToken, err := auth.GenerateToken(UserId)
+	if err != nil {
+		return c.JSON(http.StatusForbidden, response.SuccessResponse{
+			Status:  0,
+			Message: err.Error(),
+		})
+	}
+
+	// Store token to redis
+	if SaveToken := e.EmployeRedis.CreateAuth(UserId, GeneratedToken); SaveToken != nil {
+		return c.JSON(http.StatusUnprocessableEntity, response.SuccessResponse{
+			Status:  0,
+			Message: SaveToken.Error(),
+		})
+	}
+	return c.JSON(http.StatusAccepted, response.SuccessResponse{
+		Status:  1,
+		Message: "Refresh Token Success",
+		Result: map[string]interface{}{
+			"idEmploye":     UserId,
+			"access_token":  GeneratedToken.AccessToken,
+			"refresh_token": GeneratedToken.RefreshToken,
+		},
+	})
 }
+
 func (e *EmployeControllerImpl) AddEmployeEducation(c echo.Context) error {
 
 	var (
@@ -729,6 +826,7 @@ func (e *EmployeControllerImpl) AddEmployeSocial(c echo.Context) error {
 	})
 
 }
+
 func (e *EmployeControllerImpl) EmployeLogOut(c echo.Context) error {
 
 	// Validate Auth
@@ -751,5 +849,29 @@ func (e *EmployeControllerImpl) EmployeLogOut(c echo.Context) error {
 	return c.JSON(http.StatusOK, response.SuccessResponse{
 		Status:  1,
 		Message: "Successfully logged out",
+	})
+}
+
+func (e *EmployeControllerImpl) DeleteAccount(c echo.Context) error {
+
+	// Validate Auth
+	_, err := auth.ExtractMetaData(c)
+	if err != nil {
+		return c.JSON(http.StatusUnauthorized, response.SuccessResponse{
+			Status:  0,
+			Message: err.Error(),
+		})
+	}
+	EmployeId, _ := strconv.Atoi(c.Param("id"))
+	err = e.EmployeService.DeleteAccount(EmployeId)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, response.SuccessResponse{
+			Status:  0,
+			Message: err.Error(),
+		})
+	}
+	return c.JSON(http.StatusAccepted, response.SuccessResponse{
+		Status:  1,
+		Message: "Success Delete Account",
 	})
 }

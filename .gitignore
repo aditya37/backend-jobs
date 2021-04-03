@@ -1,6 +1,8 @@
 .VSCodeCounter/
 .env
-regexschema.txt
+scripts/
 keystore.json
+Backend Jobs Testing.postman_collection.json
 .vscode/
+config/
 TODO

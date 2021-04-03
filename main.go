@@ -20,10 +20,10 @@ import (
 )
 
 var (
-	router infrastructure.IEchoRouter = infrastructure.NewEchoRouter(echo.New())
-	database infrastructure.DatabaseConnection = infrastructure.NewDatabaseConnection()
-	redisCache infrastructure.IRedisConn = infrastructure.NewRedisConn("localhost:6379","",0,900)
-	firebase infrastructure.IFireStorage = infrastructure.NewFireStorageImpl()
+	router     infrastructure.IEchoRouter        = infrastructure.NewEchoRouter(echo.New())
+	database   infrastructure.DatabaseConnection = infrastructure.NewDatabaseConnection()
+	redisCache infrastructure.IRedisConn         = infrastructure.NewRedisConn(os.Getenv("REDISHOST"), "", 0, 900)
+	firebase   infrastructure.IFireStorage       = infrastructure.NewFireStorageImpl()
 )
 
 func main() {
@@ -32,44 +32,43 @@ func main() {
 	if LoadEnv != nil {
 		log.Fatalln(LoadEnv)
 	}
-	
-	ConnectDB,err := database.DatabaseConn(os.Getenv("DBHOST"),os.Getenv("DBPORT"),os.Getenv("DBUSER"),os.Getenv("DBPASSWORD"),os.Getenv("DBNAME"))
+
+	ConnectDB, err := database.DatabaseConn(os.Getenv("DBHOST"), os.Getenv("DBPORT"), os.Getenv("DBUSER"), os.Getenv("DBPASSWORD"), os.Getenv("DBNAME"))
 	if err != nil {
 		log.Panic(err)
 	}
-	
+
 	err = database.DatabaseMigrate()
 	if err != nil {
 		log.Println(err)
 	}
-	
-	EmployeRepo 	  := repository.NewEmployeImpl(ConnectDB)
-	EmployeService    := service.NewEmployeService(EmployeRepo)
-	EmployeController := controller.NewEmployeController(EmployeService,redisCache,firebase)
-	
-	
-	router.Post("test",EmployeController.TestValidate)
+
+	EmployeRepo := repository.NewEmployeImpl(ConnectDB)
+	EmployeService := service.NewEmployeService(EmployeRepo)
+	EmployeController := controller.NewEmployeController(EmployeService, redisCache, firebase)
 
 	// Verify route
-	router.Get("/verify/employe/verifyEmail",EmployeController.VerifyEmail)
-	router.Post("/verify/employe/refreshEmailVerify",EmployeController.RefreshEmailVerify)
-	
+	router.Get("/verify/employe/verifyEmail", EmployeController.VerifyEmail)
+	router.Post("/verify/employe/refreshEmailVerify", EmployeController.RefreshEmailVerify)
+	router.Post("/token/refresh", EmployeController.RefreshToken)
+
 	// Subroute or group Route
 	EmployeRoutes := router.RouteGroup("employes")
-	EmployeRoutes.POST("/signup",EmployeController.RegisterEmploye)
-	EmployeRoutes.POST("/",EmployeController.LoginEmploye)
-	EmployeRoutes.GET("/:id",EmployeController.GetEmployeById)
-	EmployeRoutes.POST("/:id/datas",EmployeController.AddEmployeData)
-	EmployeRoutes.POST("/:id/address",EmployeController.AddEmployeAddress)
-	EmployeRoutes.POST("/:id/attachments",EmployeController.AddEmployeAttachment)
-	EmployeRoutes.POST("/:id/educations",EmployeController.AddEmployeEducation)
-	EmployeRoutes.POST("/:id/experiences",EmployeController.AddEmployeExperience)
-	EmployeRoutes.POST("/:id/socials",EmployeController.AddEmployeSocial)
-	EmployeRoutes.POST("/logout",EmployeController.EmployeLogOut)
-	
+	EmployeRoutes.POST("/signup", EmployeController.RegisterEmploye)
+	EmployeRoutes.POST("/", EmployeController.LoginEmploye)
+	EmployeRoutes.GET("/:id", EmployeController.GetEmployeById)
+	EmployeRoutes.POST("/:id/datas", EmployeController.AddEmployeData)
+	EmployeRoutes.POST("/:id/address", EmployeController.AddEmployeAddress)
+	EmployeRoutes.POST("/:id/attachments", EmployeController.AddEmployeAttachment)
+	EmployeRoutes.POST("/:id/educations", EmployeController.AddEmployeEducation)
+	EmployeRoutes.POST("/:id/experiences", EmployeController.AddEmployeExperience)
+	EmployeRoutes.POST("/:id/socials", EmployeController.AddEmployeSocial)
+	EmployeRoutes.DELETE("/:id", EmployeController.DeleteAccount)
+	EmployeRoutes.POST("/logout", EmployeController.EmployeLogOut)
+
 	router.ErrorHandler() // Middleware error handling
-	
-	router.RouterLogger() // Router Logging
+
+	router.RouterLogger()       // Router Logging
 	router.StartServer(":3000") // Start server
-	
+
 }

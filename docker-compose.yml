@@ -1,0 +1,38 @@
+version: '3.5'
+
+services: 
+    #App Services
+    injobs:
+        build: 
+            context: .
+            dockerfile: Dockerfile
+        ports: 
+            - 3000:3000
+        env_file: 
+            - .env
+        depends_on: 
+            - 'redis'
+            - 'postgres'
+        networks: 
+            - backend
+    redis:
+        image: redis
+        ports: 
+            - 6379:6379
+        networks: 
+            - backend
+        command: redis-server /usr/local/redis/redis.conf
+        volumes:
+            - ./config/redis.conf:/usr/local/redis/redis.conf
+    postgres:
+        image: postgres
+        ports: 
+            - 5432:5432
+        environment: 
+            - POSTGRES_USER=admin
+            - POSTGRES_DB=db_jobs
+            - POSTGRES_PASSWORD=lymousin
+        networks: 
+            - backend
+networks: 
+    backend:

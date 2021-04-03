@@ -367,6 +367,18 @@ func (e *EmployeImpl) GetEmployeById(employeId int) ([]model.EmployeAccount, err
 }
 
 func (e *EmployeImpl) DeleteAccount(employeId int) error {
-	// e.Database.Delete(&model.EmployeAccount{},employeId)
+	sql := "DELETE FROM employe_accounts WHERE id=$1"
+	res, err := e.Database.Exec(sql, employeId)
+	if err != nil {
+		return err
+	}
+	// Get Count of row
+	RowCount, err := res.RowsAffected()
+	if err != nil {
+		return err
+	}
+	if RowCount == 0 {
+		return errors.New("Data Not Found")
+	}
 	return nil
 }
